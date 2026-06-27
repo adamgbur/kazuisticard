@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KazuistiCard — mladí lekári</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100vh; overflow-x: hidden; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: #fff;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 1.4s ease;
+    }
+    body.bg-good { background: #f0fdf8; }
+    body.bg-bad  { background: #fdf2f8; }
+    ::placeholder { color: #c0cad6; }
+
+    /* ── Animations ── */
+    @keyframes spin     { to { transform: rotate(360deg); } }
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes gradePop { 0%{transform:scale(0.3) rotate(-10deg);opacity:0;} 65%{transform:scale(1.1) rotate(2deg);} 100%{transform:scale(1) rotate(0);opacity:1;} }
+    @keyframes clueReveal { from { opacity:0; transform:translateY(-8px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes shake    { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+
+    @keyframes morphPink {
+      0%,100% { border-radius: 62% 38% 46% 54% / 60% 44% 56% 40%; }
+      20%     { border-radius: 45% 55% 54% 46% / 38% 64% 36% 62%; }
+      40%     { border-radius: 38% 62% 38% 62% / 54% 46% 54% 46%; }
+      60%     { border-radius: 56% 44% 60% 40% / 48% 52% 48% 52%; }
+      80%     { border-radius: 48% 52% 44% 56% / 62% 38% 62% 38%; }
+    }
+    @keyframes morphMint {
+      0%,100% { border-radius: 40% 60% 55% 45% / 48% 56% 44% 52%; }
+      25%     { border-radius: 58% 42% 40% 60% / 62% 38% 58% 42%; }
+      50%     { border-radius: 46% 54% 62% 38% / 40% 60% 40% 60%; }
+      75%     { border-radius: 60% 40% 48% 52% / 52% 48% 64% 36%; }
+    }
+    @keyframes ringPulse {
+      0%,100% { opacity: 0.12; transform: scale(1); }
+      50%     { opacity: 0.22; transform: scale(1.03); }
+    }
+
+    /* ── Background blobs ── */
+    #blob-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .blob { position: absolute; will-change: transform; transition: transform 0.1s linear; }
+    /* Soft glows tucked into the four corners — never over the reading column */
+    #blob-pink {
+      width: 440px; height: 440px;
+      background: radial-gradient(circle at 40% 40%, #f472b6, #e91680 60%, rgba(233,22,128,0));
+      top: -240px; left: -240px; opacity: 0.3;
+      animation: morphPink 10s ease-in-out infinite; filter: blur(45px);
+    }
+    #blob-mint {
+      width: 440px; height: 440px;
+      background: radial-gradient(circle at 60% 55%, #7ff5e2, #3ecfb2 55%, rgba(62,207,178,0));
+      top: -230px; right: -240px; opacity: 0.3;
+      animation: morphMint 12s ease-in-out infinite; filter: blur(45px);
+    }
+    #blob-pink2 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(233,22,128,0.45), rgba(233,22,128,0));
+      bottom: -220px; left: -200px; opacity: 0.28; filter: blur(50px);
+      animation: morphMint 14s ease-in-out infinite reverse;
+    }
+    #blob-mint2 {
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(62,207,178,0.4), rgba(62,207,178,0));
+      bottom: -200px; right: -190px; opacity: 0.28; filter: blur(50px);
+      animation: morphPink 11s ease-in-out infinite 2s;
+    }
+
+    .ring-svg { position: absolute; pointer-events: none; }
+    #rings-left  { left: -200px; top: 38%; transform: translateY(-50%); animation: ringPulse 6s ease-in-out infinite; }
+    #rings-right { right: -200px; top: 62%; transform: translateY(-50%); animation: ringPulse 6s ease-in-out infinite 3s; }
+    .diamond-svg { position: absolute; pointer-events: none; }
+    #dia-bl { bottom: -30px; left:  20px; }
+    #dia-br { bottom: -20px; right: 10px; }
+    #dia-tr { top:    20px;  right: 40px; width: 100px; opacity: 0.5; }
+
+    /* ── Main content ── */
+    #main-wrap { position: relative; z-index: 1; min-height: 100vh; padding: 40px 20px 120px; }
+
+    /* ── Cards (glassmorphism) ── */
+    .card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* ── Clue cards ── */
+    .clue {
+      background: rgba(255,255,255,0.97);
+      border: 1px solid rgba(226,232,240,0.9);
+      border-left: 4px solid #3ecfb2;
+      border-radius: 16px;
+      padding: 16px 22px;
+      font-size: 14.5px; line-height: 1.6; color: #1e293b;
+      box-shadow: 0 4px 20px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      display: flex; gap: 13px; align-items: flex-start;
+      animation: clueReveal 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .clue-num {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg,#3ecfb2,#27b99d);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff; margin-top: 1px;
+      box-shadow: 0 2px 8px rgba(62,207,178,0.35);
+    }
+    .clue.locked {
+      background: rgba(226,232,240,0.55); border-color: transparent; border-left-color: #cbd5e1;
+      box-shadow: none; color: #94a3b8; min-height: 56px; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; backdrop-filter: blur(4px);
+    }
+    .clue.locked .clue-num { background: #cbd5e1; box-shadow: none; }
+
+    /* ── Inputs ── */
+    .field {
+      width: 100%;
+      background: rgba(248,250,252,0.9);
+      border: 1.5px solid #e2e8f0; border-radius: 14px;
+      padding: 14px 16px; font-size: 15px; color: #0f172a; outline: none;
+      font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      caret-color: #e91680;
+    }
+    .field:focus { border-color: #e91680; box-shadow: 0 0 0 4px rgba(233,22,128,0.1); background: #fff; }
+    .field:disabled { background: rgba(241,245,249,0.7); color: #94a3b8; cursor: not-allowed; }
+
+    .sublabel { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#94a3b8; margin-bottom:12px; }
+    .spinner { display:inline-block;width:17px;height:17px;border:2.5px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0; }
+
+    /* ── Autocomplete ── */
+    .ac-wrap { flex: 1; position: relative; }
+    .dropdown {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+      background: rgba(255,255,255,0.98); border: 1px solid #e2e8f0; border-radius: 14px;
+      max-height: 250px; overflow-y: auto; z-index: 120;
+      box-shadow: 0 12px 36px rgba(15,23,42,0.16); display: none;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    .dropdown.open { display: block; }
+    .dd-item { padding: 11px 16px; font-size: 14px; color: #334155; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: background 0.1s, color 0.1s; }
+    .dd-item:last-child { border-bottom: none; }
+    .dd-item:hover, .dd-item.active { background: rgba(62,207,178,0.12); color: #0d9488; font-weight: 600; }
+    .dd-item .match { color: #e91680; font-weight: 700; }
+    .dd-empty { padding: 13px 16px; font-size: 14px; color: #94a3b8; font-style: italic; }
+
+    .btn-primary {
+      flex-shrink: 0; border: none; border-radius: 14px; padding: 14px 26px;
+      color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+      background: linear-gradient(135deg,#e91680,#f472b6);
+      box-shadow: 0 6px 20px rgba(233,22,128,0.3); transition: transform 0.12s, filter 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap;
+    }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:disabled { background: #e2e8f0; color: #94a3b8; box-shadow: none; cursor: not-allowed; }
+
+    /* ── Banner ── */
+    .banner {
+      border-radius: 14px; padding: 14px 20px; text-align: center;
+      font-size: 16px; font-weight: 700; margin-bottom: 16px;
+      display: none; align-items: center; justify-content: center; gap: 8px;
+      backdrop-filter: blur(8px);
+    }
+    .banner.show { display: flex; animation: gradePop 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+    .banner.incorrect { background: rgba(254,226,226,0.85); color: #b91c1c; border: 1.5px solid #fca5a5; }
+    .banner.correct   { background: rgba(220,252,231,0.85); color: #15803d; border: 1.5px solid #86efac; }
+    .banner.failed    { background: rgba(254,243,199,0.85); color: #92400e; border: 1.5px solid #fcd34d; }
+
+    /* ── Wrong-guess chips ── */
+    .ghist { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+    .gchip { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: #94a3b8; font-weight: 500; padding-left: 2px; }
+    .gchip .x { flex-shrink:0; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,#fb7185,#e11d48); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
+    body.dark .gchip { color:#64748b; }
+
+    /* ── Grade / explanation ── */
+    .grade-card { border-radius:24px;padding:30px 26px 26px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.14); }
+    .grade-card::after { content:'';position:absolute;top:-40%;left:-20%;width:140%;height:140%;background:radial-gradient(circle at 70% 30%,rgba(255,255,255,0.18),transparent 55%);pointer-events:none; }
+    .grade-emoji  { font-size:46px;display:block;margin-bottom:4px;animation:gradePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+    .grade-label  { font-size:23px;font-weight:800;color:#fff;margin-top:6px;letter-spacing:-0.01em; }
+    .grade-sub    { font-size:14px;color:rgba(255,255,255,0.78);margin-top:4px; }
+    .answer-pill  { display:inline-block;margin-top:14px;background:rgba(255,255,255,0.22);border:1.5px solid rgba(255,255,255,0.4);border-radius:999px;padding:8px 22px;font-size:18px;font-weight:800;color:#fff;letter-spacing:0.01em; }
+
+    .exp-head { font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0d9488;margin-bottom:8px; }
+    .exp-body { font-size:14px;line-height:1.75;color:#334155; }
+
+    .share-btn {
+      display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:11px 22px;
+      background:linear-gradient(135deg,#3ecfb2,#27b99d);color:#fff;border:none;border-radius:13px;
+      font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 6px 18px rgba(62,207,178,0.3);transition:filter 0.15s;
+    }
+    .share-btn:hover { filter:brightness(1.05); }
+
+    .next-up { text-align:center; margin-top:18px; font-size:13px; color:#94a3b8; font-weight:500; display:none; }
+    .next-up.show { display:block; }
+    #cdtimer { font-weight:800; color:#e91680; font-size:16px; }
+    body.dark #cdtimer { color:#f472b6; }
+
+    /* ── Streak dots ── */
+    .streak-wrap { display:flex; justify-content:center; align-items:center; gap:7px; margin-bottom:18px; min-height:30px; }
+    .streak-dot { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:white; box-shadow:0 2px 8px rgba(0,0,0,0.15); transition:transform 0.2s; cursor:default; }
+    .streak-dot:hover { transform:scale(1.18); }
+
+    /* ── Counter ── */
+    .counter { text-align:center; font-size:12px; color:#94a3b8; font-weight:700; letter-spacing:0.04em; margin-bottom:16px; }
+    body.dark .counter { color:#475569; }
+
+    /* ── Dark mode ── */
+    body.dark { background:#0d1117 !important; color:#e2e8f0; }
+    body.dark.bg-good { background:#042f2e !important; }
+    body.dark.bg-bad  { background:#1e0717 !important; }
+    body.dark .card { background:rgba(22,33,50,0.95) !important; border-color:rgba(255,255,255,0.07) !important; }
+    body.dark .clue { background:rgba(22,33,50,0.92) !important; border-color:rgba(255,255,255,0.07) !important; border-left-color:#3ecfb2 !important; color:#cbd5e1 !important; }
+    body.dark .clue.locked { background:rgba(30,41,59,0.5) !important; border-left-color:#334155 !important; color:#475569 !important; }
+    body.dark .field { background:rgba(15,23,42,0.9) !important; border-color:#1e2d40 !important; color:#e2e8f0 !important; }
+    body.dark .field:focus { border-color:#e91680 !important; background:#0f172a !important; }
+    body.dark .dropdown { background:rgba(15,23,42,0.98) !important; border-color:#1e2d40 !important; }
+    body.dark .dd-item { color:#cbd5e1 !important; border-color:#1e2d40 !important; }
+    body.dark .dd-item:hover, body.dark .dd-item.active { background:rgba(62,207,178,0.16) !important; color:#5eead4 !important; }
+    body.dark .sublabel { color:#334155 !important; }
+    body.dark h1 { color:#f1f5f9; }
+    body.dark header p, body.dark .change-link { color:#475569 !important; }
+    body.dark .exp-body { color:#94a3b8 !important; }
+
+    #dark-btn {
+      position:fixed; top:16px; right:16px; z-index:200;
+      background:rgba(255,255,255,0.14); border:1.5px solid rgba(255,255,255,0.2);
+      border-radius:12px; padding:7px 14px; font-size:13px; font-weight:600;
+      cursor:pointer; font-family:inherit; color:inherit;
+      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:all 0.2s;
+    }
+    body.dark #dark-btn { background:rgba(15,23,42,0.7); border-color:rgba(255,255,255,0.1); }
+
+    /* ── Logo hover ── */
+    .logo-wrap { display:inline-flex; align-items:center; cursor:default; }
+    .logo-wrap img { display:block; height:96px; width:auto; }
+    .logo-slide { overflow:hidden; max-width:0; opacity:0; white-space:nowrap; display:flex; align-items:center; transition: max-width 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease; }
+    .logo-wrap:hover .logo-slide { max-width:320px; opacity:1; }
+    .logo-slide span { font-size:28px; font-weight:800; letter-spacing:-0.03em; color:#111827; padding-left:14px; }
+    body.dark .logo-slide span { color:#f1f5f9 !important; }
+    .logo-wrap-light .logo-slide span { color:rgba(255,255,255,0.92) !important; }
+    @keyframes logoWelcome { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-6px) scale(1.05)} }
+
+    /* ── Mascot ── */
+
+    /* ── ECG marquee ── */
+    @keyframes ecgScroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+    .ecg-track { display:flex; width:200%; animation:ecgScroll 3.5s linear infinite; will-change:transform; }
+    .ecg-tile  { flex:0 0 50%; height:40px; display:block; overflow:visible; }
+  </style>
+</head>
+<body>
+
+<!-- ══ WELCOME SCREEN ══ -->
+<div id="welcome-screen" style="position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;background:linear-gradient(150deg,#c91270 0%,#e91680 40%,#f472b6 100%);overflow:hidden;">
+  <div style="position:absolute;top:-150px;right:-150px;width:440px;height:440px;border-radius:50%;background:#3ecfb2;pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-100px;left:-130px;width:380px;height:380px;border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none;"></div>
+  <div style="position:absolute;top:22%;right:7%;width:130px;height:130px;border-radius:50%;border:3px solid #3ecfb2;pointer-events:none;"></div>
+  <div style="position:absolute;bottom:18%;left:5%;width:90px;height:90px;border-radius:50%;border:1px solid rgba(255,255,255,0.13);pointer-events:none;"></div>
+
+  <div style="position:relative;max-width:520px;width:100%;text-align:center;z-index:1;">
+    <div style="display:flex;justify-content:center;margin-bottom:28px;animation:fadeUp 0.5s ease both;">
+      <div class="logo-wrap logo-wrap-light">
+        <img src="logo.png.png" alt="mladí lekári" style="height:84px;filter:brightness(0) invert(1);opacity:0.92;animation:logoWelcome 4s ease-in-out infinite;">
+        <div class="logo-slide"><span>mladí lekári</span></div>
+      </div>
+    </div>
+
+    <h1 style="font-size:60px;font-weight:800;color:white;line-height:0.98;margin-bottom:18px;letter-spacing:-0.04em;animation:fadeUp 0.5s 0.08s ease both;">KazuistiCard</h1>
+
+    <p style="font-size:15px;color:rgba(255,255,255,0.88);line-height:1.78;margin-bottom:10px;animation:fadeUp 0.5s 0.15s ease both;">
+      Každý deň nová kazuistika. Dostaneš prvú indíciu a postupne sa odhaľujú ďalšie. Napíš diagnózu, našepkávač ti ponúkne názvy z databázy diagnóz. Cieľom je trafiť diagnózu na čo najmenej pokusov.
+    </p>
+    <p style="font-size:15px;color:rgba(255,255,255,0.95);font-weight:700;margin-bottom:22px;animation:fadeUp 0.5s 0.15s ease both;">Zvládneš dnešný prípad?</p>
+    <p style="font-size:13px;color:rgba(255,255,255,0.58);font-weight:600;letter-spacing:0.05em;margin-bottom:26px;animation:fadeUp 0.5s 0.21s ease both;">— mladilekari.sk</p>
+
+    <div style="width:100%;max-width:340px;margin:0 auto 28px;overflow:hidden;animation:fadeUp 0.5s 0.27s ease both;">
+      <div class="ecg-track">
+        <svg class="ecg-tile" viewBox="0 0 360 60" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="0,30 10,30 18,23 26,30 30,30 33,34 38,3 43,50 48,30 58,30 66,23 76,30 90,30 100,30 108,23 116,30 120,30 123,34 128,3 133,50 138,30 148,30 156,23 166,30 180,30 190,30 198,23 206,30 210,30 213,34 218,3 223,50 228,30 238,30 246,23 256,30 270,30 280,30 288,23 296,30 300,30 303,34 308,3 313,50 318,30 328,30 336,23 346,30 360,30" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="ecg-tile" viewBox="0 0 360 60" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="0,30 10,30 18,23 26,30 30,30 33,34 38,3 43,50 48,30 58,30 66,23 76,30 90,30 100,30 108,23 116,30 120,30 123,34 128,3 133,50 138,30 148,30 156,23 166,30 180,30 190,30 198,23 206,30 210,30 213,34 218,3 223,50 228,30 238,30 246,23 256,30 270,30 280,30 288,23 296,30 300,30 303,34 308,3 313,50 318,30 328,30 336,23 346,30 360,30" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <button id="welcome-btn" style="background:rgba(255,255,255,0.16);border:2px solid rgba(255,255,255,0.4);border-radius:14px;padding:14px 52px;color:white;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all 0.2s;animation:fadeUp 0.5s 0.32s ease both;letter-spacing:0.01em;"
+      onmouseover="this.style.background='rgba(255,255,255,0.27)';this.style.borderColor='rgba(255,255,255,0.65)'"
+      onmouseout="this.style.background='rgba(255,255,255,0.16)';this.style.borderColor='rgba(255,255,255,0.4)'">
+      Začať →
+    </button>
+  </div>
+</div>
+
+<!-- ══ DARK MODE TOGGLE ══ -->
+<button id="dark-btn">Tmavý</button>
+
+<!-- ══ BACKGROUND LAYER ══ -->
+<div id="blob-layer">
+  <div id="blob-pink"  class="blob"></div>
+  <div id="blob-mint"  class="blob"></div>
+  <div id="blob-pink2" class="blob"></div>
+  <div id="blob-mint2" class="blob"></div>
+
+  <svg id="rings-left" class="ring-svg" width="380" height="380" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="190" cy="190" r="60"  stroke="#e91680" stroke-width="1.2" opacity="0.6"/>
+    <circle cx="190" cy="190" r="95"  stroke="#e91680" stroke-width="1"   opacity="0.45"/>
+    <circle cx="190" cy="190" r="130" stroke="#e91680" stroke-width="0.8" opacity="0.3"/>
+    <circle cx="190" cy="190" r="165" stroke="#e91680" stroke-width="0.6" opacity="0.18"/>
+    <circle cx="190" cy="190" r="185" stroke="#e91680" stroke-width="0.5" opacity="0.1"/>
+  </svg>
+  <svg id="rings-right" class="ring-svg" width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="180" cy="180" r="55"  stroke="#3ecfb2" stroke-width="1.2" opacity="0.6"/>
+    <circle cx="180" cy="180" r="90"  stroke="#3ecfb2" stroke-width="1"   opacity="0.45"/>
+    <circle cx="180" cy="180" r="125" stroke="#3ecfb2" stroke-width="0.8" opacity="0.3"/>
+    <circle cx="180" cy="180" r="158" stroke="#3ecfb2" stroke-width="0.6" opacity="0.18"/>
+    <circle cx="180" cy="180" r="178" stroke="#3ecfb2" stroke-width="0.5" opacity="0.1"/>
+  </svg>
+  <svg id="dia-bl" class="diamond-svg" width="160" height="200" viewBox="0 0 160 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="80,4 156,80 80,196 4,80" stroke="#e91680" stroke-width="1.2" opacity="0.35"/>
+    <polygon points="80,40 120,80 80,158 40,80" stroke="#e91680" stroke-width="0.7" opacity="0.18"/>
+  </svg>
+  <svg id="dia-br" class="diamond-svg" width="180" height="220" viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="90,4 176,90 90,216 4,90" stroke="#3ecfb2" stroke-width="1.2" opacity="0.35"/>
+    <polygon points="90,44 136,90 90,170 44,90" stroke="#3ecfb2" stroke-width="0.7" opacity="0.18"/>
+  </svg>
+  <svg id="dia-tr" class="diamond-svg" width="100" height="125" viewBox="0 0 100 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="50,3 97,50 50,122 3,50" stroke="#e91680" stroke-width="1" opacity="0.25"/>
+  </svg>
+</div>
+
+<!-- ══ MASCOT ══ -->
+
+<!-- ══ MAIN GAME ══ -->
+<div id="main-app" style="display:none;">
+<div id="main-wrap">
+  <div style="max-width:660px; margin:0 auto;">
+
+    <!-- Logo -->
+    <div style="display:flex; justify-content:center; margin-bottom:14px;">
+      <div class="logo-wrap">
+        <img src="logo.png.png" alt="mladí lekári logo">
+        <div class="logo-slide"><span>mladí lekári</span></div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header style="text-align:center; margin-bottom:22px;">
+      <h1 style="font-size:38px; font-weight:800; line-height:1.1; margin-bottom:10px; letter-spacing:-0.025em;">
+        <span style="background:linear-gradient(120deg,#e91680 0%,#f472b6 50%,#3ecfb2 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">KazuistiCard</span>
+      </h1>
+      <p style="color:#64748b; font-size:14.5px; max-width:470px; margin:0 auto; line-height:1.65;">
+        Prečítaj si klinický prípad a napíš svoju diagnózu. Po každom pokuse sa odhalí nová indícia.
+      </p>
+    </header>
+
+    <!-- Day label + archive -->
+    <div style="display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:14px; flex-wrap:wrap;">
+      <span id="day-label" style="font-size:12.5px; font-weight:700; color:#e91680; background:rgba(233,22,128,0.08); padding:6px 14px; border-radius:999px;"></span>
+      <button id="archive-btn" type="button" style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#0f766e; background:rgba(62,207,178,0.13); border:none; padding:6px 14px; border-radius:999px; cursor:pointer; font-family:inherit;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>
+        Archív
+      </button>
+    </div>
+
+    <!-- Streak dots -->
+    <div class="streak-wrap" id="streak-wrap"></div>
+
+    <!-- Attempt counter -->
+    <div class="counter" id="counter">Pokus 1 z 6</div>
+
+    <!-- Clue cards -->
+    <div id="clues" style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;"></div>
+
+    <!-- Wrong-guess chips -->
+    <div class="ghist" id="ghist"></div>
+
+    <!-- Banner -->
+    <div class="banner" id="banner"></div>
+
+    <!-- Input -->
+    <div id="input-row" style="display:flex; gap:10px; align-items:flex-start;">
+      <div class="ac-wrap">
+        <input type="text" id="dx-input" class="field" placeholder="Zadaj diagnózu…" autocomplete="off" spellcheck="false">
+        <div class="dropdown" id="dropdown"></div>
+      </div>
+      <button class="btn-primary" id="submit-btn">Odoslať</button>
+    </div>
+    <p style="font-size:12px; color:#cbd5e1; text-align:center; font-weight:500; margin-top:10px;">Vyber z ponuky alebo napíš a stlač Enter</p>
+
+    <!-- Results -->
+    <div id="results" style="display:none; margin-top:8px;"></div>
+
+    <!-- Next puzzle -->
+    <div class="next-up" id="next-up">Ďalší prípad o <span id="cdtimer">--:--:--</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ══ ARCHIVE MODAL ══ -->
+<style>
+  #archive-modal{ position:fixed; inset:0; z-index:400; display:none; align-items:flex-end; justify-content:center;
+    background:rgba(15,23,42,0.5); opacity:0; transition:opacity .2s ease; backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+  #archive-modal.open{ opacity:1; }
+  .arch-sheet{ background:#fff; width:100%; max-width:660px; max-height:82vh; border-radius:24px 24px 0 0;
+    padding:22px 22px 30px; box-shadow:0 -10px 40px rgba(15,23,42,0.25); transform:translateY(20px); transition:transform .24s cubic-bezier(.34,1.3,.64,1); display:flex; flex-direction:column; }
+  #archive-modal.open .arch-sheet{ transform:translateY(0); }
+  body.dark .arch-sheet{ background:#0f1b2e; color:#e2e8f0; }
+  .arch-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+  .arch-title{ font-size:19px; font-weight:800; letter-spacing:-0.02em; }
+  .arch-close{ width:34px; height:34px; border:none; border-radius:50%; background:rgba(148,163,184,0.16); color:#475569; font-size:19px; cursor:pointer; line-height:1; font-family:inherit; }
+  body.dark .arch-close{ color:#cbd5e1; background:rgba(255,255,255,0.08); }
+  .arch-sub{ font-size:12.5px; color:#94a3b8; margin-bottom:16px; }
+  .arch-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:9px; overflow-y:auto; padding:2px; }
+  .arch-day{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:11px 6px; border-radius:15px; border:1.5px solid transparent;
+    cursor:pointer; font-family:inherit; background:rgba(148,163,184,0.10); transition:transform .12s ease, box-shadow .12s ease; }
+  .arch-day:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(15,23,42,0.10); }
+  .arch-day .arch-date{ font-size:13px; font-weight:800; color:#334155; }
+  body.dark .arch-day .arch-date{ color:#e2e8f0; }
+  .arch-day .arch-badge{ font-size:17px; font-weight:800; line-height:1.1; }
+  .arch-day .arch-state{ font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.03em; }
+  .arch-day.won{ background:rgba(62,207,178,0.14); border-color:rgba(62,207,178,0.4); }
+  .arch-day.won .arch-badge{ color:#0f9e84; }
+  .arch-day.lost{ background:rgba(233,22,128,0.10); border-color:rgba(233,22,128,0.32); }
+  .arch-day.lost .arch-badge{ color:#e91680; }
+  .arch-day.open .arch-badge{ font-size:12px; font-weight:800; color:#e91680; background:rgba(233,22,128,0.12); padding:3px 10px; border-radius:999px; margin:1px 0; }
+  .arch-day.today{ box-shadow:0 0 0 2px #e91680; }
+</style>
+<div id="archive-modal">
+  <div class="arch-sheet">
+    <div class="arch-head">
+      <div class="arch-title">Archív prípadov</div>
+      <button class="arch-close" id="arch-close" type="button" aria-label="Zavrieť">×</button>
+    </div>
+    <div class="arch-sub">Klikni na deň a vyrieš jeho prípad. Odpoveď uvidíš až keď ho dohráš.</div>
+    <div class="arch-grid" id="arch-grid"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════ DIAGNOSIS DATABASE (Slovak pathology, autocomplete) ══════════ */
+const DIAGNOSES = [
+"Infarkt myokardu","STEMI","NSTEMI","Nestabilná angína pectoris","Stabilná angína pectoris","Prinzmetalova angína","Srdcové zlyhávanie","Akútne srdcové zlyhávanie","Chronické srdcové zlyhávanie","Pľúcny edém","Kardiogénny šok","Fibrilácia predsiení","Flutter predsiení","Supraventrikulárna tachykardia","Komorová tachykardia","Komorová fibrilácia","AV blokáda I. stupňa","AV blokáda II. stupňa (Mobitz I)","AV blokáda II. stupňa (Mobitz II)","AV blokáda III. stupňa","Sick sinus syndróm","Komorový extrasystol","WPW syndróm","Syndróm dlhého QT","Perikarditída","Konstriktívna perikarditída","Perikardiálna tamponáda","Myokarditída","Infekčná endokarditída","Reumatická horúčka","Aortálna stenóza","Aortálna regurgitácia","Mitrálna stenóza","Mitrálna regurgitácia","Prolaps mitrálnej chlopne","Trikuspidálna regurgitácia","Pľúcna hypertenzia","Cor pulmonale","Dilatačná kardiomyopatia","Hypertrofická kardiomyopatia","Reštrikčná kardiomyopatia","Artériová hypertenzia","Hypertenzná emergencia","Hypertenzná urgencia","Disekcia aorty","Aneuryzma brušnej aorty","Aneuryzma hrudnej aorty","Hlboká žilová trombóza","Pľúcna embólia","Povrchová tromboflebitída","Chronická žilová insuficiencia","Periférne artériové ochorenie","Akútna končatinová ischémia","Raynaudov fenomén","Vazovagálna synkopa",
+"Pneumónia","Komunitná pneumónia","Nozokomiálna pneumónia","Aspiračná pneumónia","Atypická pneumónia","Akútna bronchitída","Chronická bronchitída","CHOCHP","Exacerbácia CHOCHP","Astma","Status asthmaticus","Bronchiektázie","Cystická fibróza","Pneumotorax","Spontánny pneumotorax","Tenzný pneumotorax","Pleurálny výpotok","Empyém hrudníka","Idiopatická pľúcna fibróza","Sarkoidóza","Tuberkulóza","Pľúcny absces","Pľúcny karcinóm","Malobunkový karcinóm pľúc","Nemalobunkový karcinóm pľúc","Mezotelióm","ARDS","Obštrukčné spánkové apnoe","Pertussis","Bronchiolitída","Laryngitída","Epiglotitída","Sínusitída","Faryngitída","Tonzilitída",
+"Gastroezofageálny reflux","Refluxná ezofagitída","Barrettov pažerák","Achalázia","Karcinóm pažeráka","Mallory-Weissov syndróm","Varixy pažeráka","Gastritída","Žalúdočný vred","Dvanástnikový vred","Peptický vred","Krvácanie do horného GIT","Krvácanie do dolného GIT","Karcinóm žalúdka","Apendicitída","Divertikulitída","Divertikulóza","Ileus","Paralytický ileus","Mechanický ileus","Volvulus","Invaginácia","Inkarcerovaná hernia","Crohnova choroba","Ulcerózna kolitída","Ischemická kolitída","Pseudomembranózna kolitída","Syndróm dráždivého čreva","Celiakia","Malabsorpčný syndróm","Kolorektálny karcinóm","Hemoroidy","Análna fisúra","Perianálny absces","Akútna mezenteriálna ischémia","Peritonitída","Gastroenteritída",
+"Akútna hepatitída A","Akútna hepatitída B","Akútna hepatitída C","Autoimunitná hepatitída","Alkoholová hepatitída","Steatóza pečene","Nealkoholová steatohepatitída","Cirhóza pečene","Portálna hypertenzia","Ascites","Hepatálna encefalopatia","Spontánna bakteriálna peritonitída","Hepatorenálny syndróm","Hepatocelulárny karcinóm","Akútne zlyhanie pečene","Cholelitiáza","Žlčníková kolika","Akútna cholecystitída","Choledocholitiáza","Cholangitída","Primárna biliárna cholangitída","Primárna sklerozujúca cholangitída","Karcinóm pankreasu","Akútna pankreatitída","Chronická pankreatitída","Cholangiokarcinóm","Wilsonova choroba","Hemochromatóza","Gilbertov syndróm","Obštrukčný ikterus",
+"Akútne poškodenie obličiek","Chronická choroba obličiek","Glomerulonefritída","Nefrotický syndróm","Nefritický syndróm","IgA nefropatia","Akútna tubulárna nekróza","Intersticiálna nefritída","Pyelonefritída","Cystitída","Uretritída","Urolitiáza","Renálna kolika","Polycystická choroba obličiek","Karcinóm obličky","Karcinóm močového mechúra","Benígna hyperplázia prostaty","Karcinóm prostaty","Prostatitída","Torzia testis","Epididymitída","Orchitída","Renálna artériová stenóza","Diabetická nefropatia",
+"Diabetes mellitus 1. typu","Diabetes mellitus 2. typu","Diabetická ketoacidóza","Hyperglykemický hyperosmolárny stav","Hypoglykémia","Hypotyreóza","Hashimotova tyroiditída","Hypertyreóza","Gravesova choroba","Tyreotoxická kríza","Myxedémová kóma","Subakútna tyroiditída","Struma","Karcinóm štítnej žľazy","Primárna hyperparatyreóza","Hypoparatyreóza","Cushingov syndróm","Addisonova choroba","Adrenálna kríza","Feochromocytóm","Primárny hyperaldosteronizmus","Akromegália","Hyperprolaktinémia","Diabetes insipidus","SIADH","Hypofyzárny adenóm","Karcinoidový syndróm","Metabolický syndróm","Dna",
+"Ischemická cievna mozgová príhoda","Hemoragická cievna mozgová príhoda","Tranzitorný ischemický atak","Subarachnoidálne krvácanie","Subdurálny hematóm","Epidurálny hematóm","Intracerebrálne krvácanie","Bakteriálna meningitída","Vírusová meningitída","Encefalitída","Mozgový absces","Migréna","Tenzná bolesť hlavy","Cluster bolesť hlavy","Epilepsia","Status epilepticus","Parkinsonova choroba","Alzheimerova choroba","Vaskulárna demencia","Skleróza multiplex","Myasténia gravis","Guillainov-Barrého syndróm","Amyotrofická laterálna skleróza","Bellova obrna","Trigeminálna neuralgia","Diabetická polyneuropatia","Syndróm karpálneho tunela","Benígne polohové vertigo","Ménièrova choroba","Glioblastóm","Meningeóm","Hydrocefalus","Komócia mozgu","Synkopa",
+"Sideropenická anémia","Megaloblastová anémia","Anémia z nedostatku B12","Hemolytická anémia","Aplastická anémia","Kosáčiková anémia","Talasémia","Anémia chronických chorôb","Polycytémia vera","Akútna myeloidná leukémia","Akútna lymfoblastová leukémia","Chronická myeloidná leukémia","Chronická lymfocytová leukémia","Hodgkinov lymfóm","Non-Hodgkinov lymfóm","Mnohopočetný myelóm","Myelodysplastický syndróm","Imunitná trombocytopénia","Trombotická trombocytopenická purpura","Hemofília","Von Willebrandova choroba","Diseminovaná intravaskulárna koagulácia",
+"Sepsa","Septický šok","COVID-19","Chrípka","Infekčná mononukleóza","HIV infekcia","Lymská borelióza","Kliešťová encefalitída","Malária","Tetanus","Botulizmus","Besnota","Mumps","Osýpky","Rubeola","Ovčie kiahne","Pásový opar","Herpes simplex","Šarlach","Toxoplazmóza","Salmonelóza","Clostridium difficile infekcia",
+"Reumatoidná artritída","Systémový lupus erythematosus","Systémová skleróza","Sjögrenov syndróm","Dermatomyozitída","Polymyozitída","Polymyalgia reumatica","Temporálna arteritída","Granulomatóza s polyangiitídou","Polyarteritis nodosa","Ankylozujúca spondylitída","Psoriatická artritída","Reaktívna artritída","Pseudodna","Osteoartróza","Fibromyalgia","Antifosfolipidový syndróm","Behçetova choroba",
+"Malígny melanóm","Bazocelulárny karcinóm","Spinocelulárny karcinóm kože","Aktinická keratóza","Psoriáza","Atopická dermatitída","Kontaktná dermatitída","Seboroická dermatitída","Urtikária","Celulitída","Erysipel","Impetigo","Furunkul","Akné","Rosacea","Vitiligo","Pemphigus vulgaris","Bulózny pemfigoid","Lichen planus","Erythema multiforme","Stevensov-Johnsonov syndróm","Toxická epidermálna nekrolýza","Scabies",
+"Ektopická gravidita","Spontánny potrat","Preeklampsia","Eklampsia","HELLP syndróm","Gestačný diabetes","Placenta praevia","Abrupcia placenty","Ovariálna cysta","Syndróm polycystických ovárií","Endometrióza","Myóm maternice","Zápalové ochorenie panvy","Karcinóm krčka maternice","Karcinóm endometria","Karcinóm ovária","Karcinóm prsníka","Mastitída","Fibroadenóm prsníka","Torzia ovária","Hyperemesis gravidarum","Vulvovaginálna kandidóza","Bakteriálna vaginóza",
+"Osteoporóza","Osteomalácia","Osteomyelitída","Septická artritída","Zlomenina krčka stehnovej kosti","Kompartment syndróm","Hernia medzistavcovej platničky","Spinálna stenóza","Burzitída","Tendinitída","Epikondylitída","Plantárna fasciitída",
+"Akútny glaukóm","Chronický glaukóm","Katarakta","Vekom podmienená makulárna degenerácia","Diabetická retinopatia","Odlúčenie sietnice","Oklúzia centrálnej retinálnej artérie","Konjunktivitída","Uveitída","Optická neuritída","Otitis media","Otitis externa","Mastoiditída","Epistaxa","Karcinóm hrtana",
+"Veľká depresívna porucha","Bipolárna porucha","Generalizovaná úzkostná porucha","Panická porucha","Schizofrénia","Posttraumatická stresová porucha","Obsesívno-kompulzívna porucha","Anorexia nervosa","Bulímia nervosa","Delírium","Závislosť od alkoholu","Abstinenčný syndróm","Wernickeho encefalopatia","Korsakovov syndróm",
+"Pylorostenóza","Hirschsprungova choroba","Febrilné kŕče","Kawasakiho choroba","Henochova-Schönleinova purpura","Fenylketonúria","Downov syndróm","Subglotická laryngitída (krup)",
+"Anafylaxia","Anafylaktický šok","Angioedém","Hyperkaliémia","Hypokaliémia","Hyponatriémia","Hypernatriémia","Hyperkalciémia","Hypokalciémia","Metabolická acidóza","Metabolická alkalóza","Respiračná acidóza","Respiračná alkalóza","Ťažká dehydratácia","Otrava paracetamolom","Otrava oxidom uhoľnatým","Hypotermia","Úpal","Rabdomyolýza","Syndróm rozpadu nádoru"
+];
+
+/* ══════════ DAILY PUZZLES ══════════ */
+const PUZZLES = [
+  { answer:"Subarachnoidálne krvácanie",
+    clues:[
+      "52-ročný muž prichádza s náhlou extrémnou bolesťou hlavy — opisuje ju ako „najhoršiu v živote“.",
+      "Hlási sprievodnú nauzeu, zvracanie a rozmazané videnie, ktoré vznikli súčasne s bolesťou.",
+      "V anamnéze má asymptomatický hypofyzárny adenóm sledovaný na neurológii.",
+      "Pri vyšetrení: paréza pravého nervus oculomotorius (III.) s dilatovanou, nereagujúcou zrenicou.",
+      "CT mozgu: hyperdenzita v bazálnych cisternách a sylviovej ryhe.",
+      "Lumbálna punkcia: xantochromický likvor, otvárací tlak 34 cmH₂O." ],
+    explain:"Subarachnoidálne krvácanie (SAK) — najčastejšie z ruptúry vakovitej aneuryzmy. Paréza n. III svedčí pre aneuryzmu a. communicans posterior. Urgentné CT, CT angiografia a neurochirurgické/endovaskulárne ošetrenie. Rebleeding je smrteľná komplikácia!" },
+  { answer:"Infarkt myokardu",
+    clues:[
+      "63-ročný muž s náhlou zvieravou bolesťou na hrudníku trvajúcou 50 minút.",
+      "Bolesť vyžaruje do ľavého ramena a čeľuste; sprevádza ju studený pot a nauzea.",
+      "Rizikový profil: fajčiar 30 rokov, hypertenzia, diabetes 2. typu, hyperlipidémia.",
+      "EKG: elevácia ST segmentu vo zvodoch II, III a aVF o 3 mm.",
+      "Troponín I: 12,4 µg/L (norma < 0,04); CK-MB výrazne zvýšená.",
+      "Koronarografia: 100 % oklúzia distálnej pravej koronárnej artérie." ],
+    explain:"STEMI — kompletná oklúzia koronárnej artérie s transmurálnou ischémiou. Dolný STEMI (II, III, aVF) = povodie pravej koronárnej artérie. Liečba: primárna PCI do 90 minút, duálna antiagregácia a antikoagulácia." },
+  { answer:"Pľúcna embólia",
+    clues:[
+      "46-ročná žena s náhlou dýchavičnosťou a pleurálnou bolesťou pravej strany hrudníka po 10-hodinovom lete.",
+      "Tachykardia 115/min, saturácia O₂ 89 % na vzduchu, subfebrília 37,8 °C.",
+      "Pravé predkolenie: opuch, erytém a zvýšená teplota — pozitívny Homansov príznak.",
+      "EKG: sínusová tachykardia, nový vzor S1Q3T3.",
+      "D-dimér: 4200 µg/L; Wellsovo skóre 7 bodov (vysoká pravdepodobnosť).",
+      "CT angiografia pľúcnice: defekty plnenia v pravej a. pulmonalis." ],
+    explain:"Pľúcna embólia — najčastejšie z hlbokej žilovej trombózy (Virchowova triáda). Liečba podľa rizika: NOAK pri nízkom riziku; pri šoku trombolýza alebo embolektómia." },
+  { answer:"Diabetická ketoacidóza",
+    clues:[
+      "18-ročný muž s diabetom 1. typu, niekoľko dní trvajúca nauzea, vracanie a bolesť brucha.",
+      "Tachykardia 112/min, hypotenzia, dezorientácia a Kussmaulovo dýchanie.",
+      "Z dychu cítiť ovocný (acetónový) zápach, sliznice suché.",
+      "Glykémia 26,4 mmol/L, ketóny v moči 4+.",
+      "ABR: pH 7,14, pCO₂ 18 mmHg, HCO₃⁻ 6 mmol/L.",
+      "Aniónové okno 32 mmol/L, kálium 6,1 mmol/L pred liečbou." ],
+    explain:"Diabetická ketoacidóza — nedostatok inzulínu vedie k lipolýze, tvorbe ketolátok a metabolickej acidóze. Liečba: tekutiny, kontinuálny inzulín, substitúcia kália (keď klesne pod 5,5) a hľadanie spúšťača." },
+  { answer:"Bakteriálna meningitída",
+    clues:[
+      "20-ročný študent z internátu: teplota 39,8 °C, silná bolesť hlavy a stuhnutosť šije.",
+      "Fotofóbia, pozitívne Kernigovo aj Brudzinského znamenie.",
+      "Na trupe a končatinách petechie a splývajúca purpura nemiznúca pri tlaku.",
+      "CT mozgu bez patológie — lumbálna punkcia je bezpečná.",
+      "Likvor zakalený: neutrofily 2400/µL, proteíny 4,1 g/L, glukóza 0,9 mmol/L.",
+      "Gramovo farbenie: gramnegatívne diplokoky (Neisseria meningitidis)." ],
+    explain:"Bakteriálna (meningokoková) meningitída — neodkladný stav. Okamžite cefalosporín 3. generácie + dexametazón. Profylaxia kontaktov a hlásenie. Prevencia očkovaním." },
+  { answer:"Apendicitída",
+    clues:[
+      "21-ročná žena s bolesťou brucha 20 hodín — začala okolo pupka, teraz v pravom podbrušku.",
+      "Nauzea, anorexia, teplota 38,3 °C, bolesť pri chôdzi.",
+      "Maximálna citlivosť v McBurneyho bode vpravo.",
+      "Pozitívny Blumbergov, Rovsingov aj psoasový príznak.",
+      "Leukocyty 15,4 G/L s posunom doľava, CRP 82 mg/L.",
+      "USG: nestlačiteľná tubulárna štruktúra priemeru 9 mm bez peristaltiky." ],
+    explain:"Akútna apendicitída — najčastejšia náhla brušná príhoda u mladých. Alvaradovo skóre ≥ 7 → operácia. Zlatý štandard je laparoskopická apendektómia. Hrozí perforácia s peritonitídou." },
+  { answer:"Anafylaxia",
+    clues:[
+      "33-ročná žena s náhlym opuchom pier, jazyka a hrdla 15 minút po jedle v reštaurácii.",
+      "Generalizovaná žihľavka, sčervenanie tváre a intenzívne svrbenie.",
+      "Stridor, dysfágia a chrapot — angioedém hrtana, saturácia 90 %.",
+      "Tlak 72/40 mmHg, pulz 132/min — distribučný šok.",
+      "Pacientka udáva alergiu na arašidy; jedlo obsahovalo arašidovú omáčku.",
+      "Tryptáza séra 58 µg/L — masívna degranulácia mastocytov." ],
+    explain:"Anafylaxia — závažná IgE-sprostredkovaná systémová alergická reakcia. Liek prvej voľby: adrenalín 0,5 mg i.m. do stehna. Doplnkovo kyslík, tekutiny, antihistaminiká a kortikoidy." },
+  { answer:"Disekcia aorty",
+    clues:[
+      "58-ročný muž s náhlou trhavou bolesťou chrbta vyžarujúcou do hrudníka a brucha.",
+      "Dlhoročná neliečená hypertenzia; tlak vpravo 185/100, vľavo 140/88 mmHg.",
+      "Oslabené pulzy na dolných končatinách, nový diastolický šelest nad aortou.",
+      "RTG hrudníka: rozšírené mediastínum nad 8 cm.",
+      "EKG bez známok ischémie (odlíšenie od infarktu).",
+      "CT angiografia: intimálny flap od koreňa aorty — Stanford typ A." ],
+    explain:"Disekcia aorty typ A — urgentná kardiochirurgia. Typ B (zostupná) sa lieči konzervatívne kontrolou tlaku betablokátormi. Bez liečby mortalita 1–2 % za každú hodinu." },
+  { answer:"Sepsa",
+    clues:[
+      "68-ročná žena: teplota 39,2 °C, triaška a zmätenosť dva dni po urologickom zákroku.",
+      "Pulz 118/min, tlak 92/58 mmHg, tachypnoe 26/min.",
+      "Moč zakalený, páchnuci, nitrity pozitívne, leukocyty 4+.",
+      "Laktát 3,8 mmol/L; qSOFA 3/3.",
+      "Leukocyty 22 G/L, CRP 320 mg/L, prokalcitonín 38 ng/mL.",
+      "Zdroj: urosepsa, hemokultúry pozitívne na E. coli." ],
+    explain:"Sepsa — život ohrozujúca orgánová dysfunkcia pri dysregulovanej reakcii na infekciu. Hodinový balík: hemokultúry → antibiotikum → 30 ml/kg kryštaloidov → vazopresor pri pretrvávajúcej hypotenzii." },
+  { answer:"Akútna pankreatitída",
+    clues:[
+      "42-ročný muž s intenzívnou bolesťou epigastria vyžarujúcou do chrbta po výdatnom jedle.",
+      "Nauzea a opakované vracanie bez úľavy, teplota 37,9 °C.",
+      "Konzumuje 80–100 g alkoholu denne; žlčníkové kamene vylúčené.",
+      "Brucho výrazne citlivé v epigastriu, oslabená peristaltika.",
+      "Amyláza 1840 U/L, lipáza 4200 U/L, CRP 220 mg/L.",
+      "CT brucha: nekróza ~50 % pankreasu s peripankreatickou kolekciou." ],
+    explain:"Akútna pankreatitída — najčastejšie z biliárnej príčiny a alkoholu. Liečba: agresívna hydratácia, analgézia a včasná enterálna výživa. Závažnosť hodnotí skóre Ranson/BISAP." },
+  { answer:"Ektopická gravidita",
+    clues:[
+      "26-ročná žena s bolesťou v ľavom podbrušku a špinením 7 týždňov po poslednej menštruácii.",
+      "Tlak 95/60 mmHg, tachykardia 108/min, bledosť; tehotenský test pozitívny.",
+      "V anamnéze chlamýdiová infekcia a predošlá ektopická gravidita.",
+      "Citlivosť ľavého adnexa a bolestivá pohyblivosť krčka maternice.",
+      "β-hCG 4200 IU/L nezodpovedá vnútromaternicovému vaku.",
+      "Transvaginálne USG: prázdna maternica, útvar 3,5 cm pri ľavom vajíčkovode a tekutina v Douglasovom priestore." ],
+    explain:"Ektopická gravidita — implantácia mimo dutiny maternice (95 % vo vajíčkovode). Liečba: laparoskopia pri nestabilite alebo metotrexát pri stabilnej pacientke s nízkym β-hCG." },
+  { answer:"Hypertenzná emergencia",
+    clues:[
+      "61-ročný muž s bolesťou hlavy, rozmazaným videním a zmätenosťou tri hodiny.",
+      "Tlak 228/142 mmHg na oboch rukách, bez cyanózy.",
+      "Fundus: edém papily a plamienkové hemorágie — retinopatia IV. stupňa.",
+      "Kreatinín 286 µmol/L (pred 3 mesiacmi 110) — akútne poškodenie obličiek.",
+      "Ľahko zvýšený troponín, BNP 420 pg/mL, na EKG hypertrofia ľavej komory.",
+      "CT mozgu: bilaterálne okcipitálne hypodenzity (obraz PRES)." ],
+    explain:"Hypertenzná emergencia — ťažká hypertenzia s akútnym poškodením cieľových orgánov. Liečba i.v. (labetalol, urapidil, nitroprusid) s kontrolovaným poklesom tlaku o 20–25 % v prvej hodine." },
+  { answer:"Gravesova choroba",
+    clues:[
+      "31-ročná žena s niekoľkomesačnou nervozitou, búšením srdca a neúmyselným chudnutím napriek zvýšenej chuti do jedla.",
+      "Hlási neznášanlivosť tepla, potenie, jemný tremor rúk a riedku stolicu.",
+      "Pokojová tachykardia 118/min, teplá vlhká koža, difúzne zväčšená štítna žľaza so šelestom.",
+      "Obojstranný exoftalmus a retrakcia viečok; tuhý opuch predkolení (pretibiálny myxedém).",
+      "TSH < 0,01 mIU/L, voľný T4 aj T3 výrazne zvýšené.",
+      "Pozitívne protilátky proti TSH receptoru (TRAb); scintigrafia: difúzne zvýšená akumulácia." ],
+    explain:"Gravesova choroba — autoimunitná hypertyreóza, kde TRAb stimulujú TSH receptor. Triáda: hypertyreóza, orbitopatia, pretibiálny myxedém. Liečba: tyreostatiká (tiamazol), rádiojód alebo tyreoidektómia; betablokátor na symptómy." },
+  { answer:"Exacerbácia CHOCHP",
+    clues:[
+      "68-ročný muž, fajčiar (50 balíčkorokov), s tri dni narastajúcou dýchavičnosťou a kašľom.",
+      "Spútum zmenilo farbu na žltozelené a je ho podstatne viac než zvyčajne.",
+      "Dýcha cez zovreté pery, používa pomocné dýchacie svaly, hrudník súdkovitý.",
+      "Auskultačne predĺžené exspírium, difúzne pískoty a vrzgoty, oslabené dýchanie.",
+      "Saturácia 86 %, ABR: pH 7,31, pCO₂ 7,8 kPa — respiračná acidóza s hyperkapniou.",
+      "RTG bez infiltrátu; v minulosti spirometria FEV1/FVC 0,58, FEV1 45 % n.h." ],
+    explain:"Akútna exacerbácia CHOCHP — najčastejšie infekčný spúšťač. Liečba: riadený kyslík (cieľ SpO₂ 88–92 %), bronchodilatanciá, systémové kortikoidy, antibiotiká pri purulentnom spúte; pri hyperkapnii zvážiť neinvazívnu ventiláciu (NIV)." },
+  { answer:"Komunitná pneumónia",
+    clues:[
+      "59-ročný muž s tri dni trvajúcou horúčkou, kašľom s hrdzavým spútom a bolesťou na hrudníku pri nádychu.",
+      "Triaška, malátnosť, dýchavičnosť; teplota 39,1 °C.",
+      "Nad pravou bázou pľúc krepitácie, bronchiálne dýchanie a zosilnený fremitus.",
+      "Tachypnoe 28/min, saturácia 91 %, tachykardia.",
+      "Leukocyty 17 G/L s neutrofíliou, CRP 240 mg/L; skóre CURB-65 2 body.",
+      "RTG hrudníka: lobárny infiltrát pravého dolného laloka." ],
+    explain:"Komunitná pneumónia, typicky Streptococcus pneumoniae. Závažnosť hodnotí CURB-65. Empirická ATB liečba (amoxicilín/klavulanát ± makrolid) podľa rizika a miesta liečby." },
+  { answer:"Spontánny pneumotorax",
+    clues:[
+      "23-ročný vysoký štíhly muž, fajčiar, s náhlou ostrou bolesťou ľavej strany hrudníka a dýchavičnosťou v pokoji.",
+      "Bolesť vznikla náhle bez úrazu a zhoršuje sa pri nádychu.",
+      "Vľavo oslabené až vymiznuté dýchanie a hypersonórny poklep.",
+      "Trachea v strednej čiare, hemodynamicky stabilný, saturácia 93 %.",
+      "RTG hrudníka: kolaps ľavých pľúc ~30 % s viditeľnou viscerálnou pleurou.",
+      "Bez posunu mediastína — odlíšenie od tenzného pneumotoraxu." ],
+    explain:"Primárny spontánny pneumotorax — typicky mladí štíhli fajčiari (ruptúra apikálnych búl). Malý a stabilný: observácia/kyslík; väčší alebo symptomatický: aspirácia alebo hrudná drenáž." },
+  { answer:"Akútna cholecystitída",
+    clues:[
+      "47-ročná obézna žena s pretrvávajúcou bolesťou pravého podrebria 12 hodín po mastnom jedle.",
+      "Bolesť vyžaruje pod pravú lopatku, sprevádza ju nauzea a vracanie; teplota 38,4 °C.",
+      "V anamnéze opakované žlčníkové koliky; bolesť teraz nepoľavuje.",
+      "Pozitívny Murphyho príznak — zastavenie nádychu pri palpácii pravého podrebria.",
+      "Leukocyty 14 G/L, CRP 110 mg/L, mierne zvýšené GGT a ALP, bilirubín v norme.",
+      "USG: zhrubnutá stena žlčníka > 4 mm, perivezikálna tekutina a vklinený konkrement v krčku." ],
+    explain:"Akútna kalkulózna cholecystitída — obštrukcia ductus cysticus konkrementom. Liečba: ATB, analgézia a včasná laparoskopická cholecystektómia. Rizikový profil „4F“ (female, forty, fat, fertile)." },
+  { answer:"Crohnova choroba",
+    clues:[
+      "24-ročný muž s niekoľkomesačnými kŕčovitými bolesťami brucha, hnačkami a chudnutím.",
+      "Hnačky občas s prímesou krvi, únava a recidivujúce afty v ústach.",
+      "Subfebrílie, perianálna fistula a bolestivá citlivosť v pravom podbrušku.",
+      "Extraintestinálne príznaky: bolesti kĺbov a erythema nodosum na predkoleniach.",
+      "Anémia, zvýšené CRP a fekálny kalprotektín; protilátky ASCA pozitívne.",
+      "Kolonoskopia: segmentové „skip“ lézie s dlažbovitou sliznicou; biopsia: nekazeifikujúce granulómy." ],
+    explain:"Crohnova choroba — transmurálny zápal kdekoľvek v GIT (typicky terminálne ileum), so „skip“ léziami a granulómami. Komplikácie: striktúry a fistuly. Liečba: kortikoidy, imunomodulátory, biologiká." },
+  { answer:"Ischemická cievna mozgová príhoda",
+    clues:[
+      "72-ročná žena s náhle vzniknutou slabosťou pravej ruky a nohy a poruchou reči pred 90 minútami.",
+      "Pokles pravého kútika úst a nezreteľná reč; príznaky vznikli naraz.",
+      "Fibrilácia predsiení v anamnéze, neužíva antikoaguláciu; tlak 178/96 mmHg.",
+      "Neurologicky: pravostranná hemiparéza, centrálna paréza tváre a expresívna afázia (NIHSS 9).",
+      "CT mozgu natívne: bez krvácania, včasné známky ischémie v povodí ľavej a. cerebri media.",
+      "CT angiografia: oklúzia M1 segmentu ľavej a. cerebri media." ],
+    explain:"Akútna ischemická cievna mozgová príhoda, pravdepodobne kardioembolická pri fibrilácii predsiení. V časovom okne i.v. trombolýza a/alebo mechanická trombektómia pri oklúzii veľkej tepny. „Čas je mozog.“" },
+  { answer:"Parkinsonova choroba",
+    clues:[
+      "67-ročný muž s rok narastajúcim tremorom pravej ruky, ktorý je výraznejší v pokoji.",
+      "Rodina si všimla spomalenie pohybov, drobné písmo a tichší monotónny hlas.",
+      "Tremor typu „počítania mincí“ 4–6 Hz, ktorý ustupuje pri cielenom pohybe.",
+      "Rigidita typu ozubeného kolesa, bradykinézia a hypomímia tváre.",
+      "Chôdza drobnými krokmi, znížené súhyby rúk a posturálna instabilita.",
+      "Výrazne asymetrický začiatok a výborná odpoveď na skúšobnú dávku levodopy." ],
+    explain:"Parkinsonova choroba — degenerácia dopamínergných neurónov substantia nigra. Kardinálne príznaky: pokojový tremor, rigidita, bradykinézia, posturálna instabilita. Liečba: levodopa, agonisty dopamínu." },
+  { answer:"Guillainov-Barrého syndróm",
+    clues:[
+      "38-ročný muž so 4 dni narastajúcou symetrickou slabosťou nôh, ktorá postupuje smerom nahor.",
+      "Pred 2 týždňami prekonal hnačkové ochorenie; teraz mravčenie chodidiel a rúk.",
+      "Vyhasnuté šľachové reflexy na dolných aj horných končatinách.",
+      "Slabosť je symetrická a vzostupná, bez poruchovej úrovne čitia (odlíšenie od miechovej lézie).",
+      "Likvor: vysoký proteín pri normálnom počte buniek — albumino-cytologická disociácia.",
+      "EMG: demyelinizačná polyneuropatia; hrozí postih dýchacích svalov." ],
+    explain:"Guillainov-Barrého syndróm — akútna autoimunitná polyradikuloneuropatia, často po infekcii (Campylobacter jejuni). Nutné sledovať vitálnu kapacitu! Liečba: IVIG alebo plazmaferéza." },
+  { answer:"Reumatoidná artritída",
+    clues:[
+      "45-ročná žena s niekoľkomesačnou bolesťou a opuchom drobných kĺbov rúk, symetricky.",
+      "Rannú stuhnutosť kĺbov má vyše hodiny a zlepšuje sa rozcvičením.",
+      "Postihnuté sú MCP a PIP kĺby a zápästia, DIP kĺby ušetrené; mäkký opuch a citlivosť.",
+      "Únava a subfebrílie; podkožné uzlíky na extenzorovej strane predlaktia.",
+      "Pozitívny reumatoidný faktor a anti-CCP protilátky, zvýšené FW a CRP.",
+      "RTG rúk: periartikulárna osteoporóza a okrajové erózie." ],
+    explain:"Reumatoidná artritída — symetrická autoimunitná polyartritída drobných kĺbov s dlhou rannou stuhnutosťou. Včasná liečba DMARD (metotrexát) zabraňuje eróziám a deformitám." },
+  { answer:"Systémový lupus erythematosus",
+    clues:[
+      "27-ročná žena s únavou, bolesťami kĺbov a motýľovitým začervenaním tváre po pobyte na slnku.",
+      "Vypadávanie vlasov, vredy v ústach a Raynaudov fenomén.",
+      "Neerozívna artritída drobných kĺbov a fotosenzitívny exantém šetriaci nazolabiálne ryhy.",
+      "Serozitída s pleurálnou bolesťou; v moči proteinúria a erytrocytové valce.",
+      "Pozitívne ANA a vysoko špecifické anti-dsDNA, znížený komplement C3/C4.",
+      "Renálna biopsia: lupusová nefritída (imunokomplexová glomerulonefritída)." ],
+    explain:"Systémový lupus erythematosus — multiorgánové autoimunitné ochorenie mladých žien. Anti-dsDNA a nízky komplement korelujú s aktivitou. Postih obličiek určuje prognózu; liečba imunosupresiou." },
+  { answer:"Temporálna arteritída",
+    clues:[
+      "74-ročná žena s novou jednostrannou bolesťou hlavy v spánkovej oblasti niekoľko týždňov.",
+      "Bolesť skalpu pri česaní a bolesť čeľuste pri žuvaní (klaudikácia čeľuste).",
+      "Stuhnutosť a bolesť ramenného a panvového pletenca (polymyalgia reumatica).",
+      "Citlivá, zhrubnutá a slabo pulzujúca a. temporalis; subfebrílie a chudnutie.",
+      "FW 92 mm/h a výrazne zvýšené CRP.",
+      "Biopsia a. temporalis: granulomatózna zápalová infiltrácia s obrovskými bunkami." ],
+    explain:"Temporálna (obrovskobunková) arteritída — vaskulitída veľkých a stredných tepien u starších. Hrozí náhla slepota cez a. ophthalmica! Pri podozrení ihneď vysokodávkové kortikoidy — biopsia liečbu neodkladá." },
+  { answer:"Mnohopočetný myelóm",
+    clues:[
+      "66-ročný muž s niekoľkomesačnými bolesťami chrbta a rebier a celkovou únavou.",
+      "Opakované infekcie, smäd a zápcha; v noci bolesti kostí.",
+      "Normocytová anémia, hyperkalciémia a zvýšený kreatinín.",
+      "Vysoká FW, na elektroforéze bielkovín úzky monoklonálny M-gradient.",
+      "RTG/CT: mnohopočetné osteolytické „vyrazené“ ložiská v lebke a panve.",
+      "Trepanobiopsia: > 30 % klonálnych plazmatických buniek; Bence Jonesova bielkovina v moči." ],
+    explain:"Mnohopočetný myelóm — malígna proliferácia plazmatických buniek. Príznaky CRAB: hyperKalciémia, Renálne zlyhanie, Anémia, Bone (kostné) lézie. Liečba: cielená terapia ± autológna transplantácia." },
+  { answer:"Sideropenická anémia",
+    clues:[
+      "38-ročná žena s niekoľkotýždňovou únavou, dýchavičnosťou pri námahe a bledosťou.",
+      "Bolesti hlavy, búšenie srdca a nezvyklá chuť na hryzenie ľadu (pica).",
+      "Silné a dlhé menštruačné krvácania v anamnéze; lámavé nechty.",
+      "Bledé spojovky, koilonychia (lyžicovité nechty) a ragády ústnych kútikov.",
+      "Krvný obraz: mikrocytová hypochrómna anémia so zvýšeným RDW.",
+      "Nízky feritín a sérové železo, vysoká väzbová kapacita (TIBC)." ],
+    explain:"Sideropenická anémia — najčastejšia anémia, z chronických strát (menštruácia, GIT). Mikrocytóza a nízky feritín. Liečba železom a pátranie po zdroji krvácania." },
+  { answer:"Infekčná mononukleóza",
+    clues:[
+      "19-ročná študentka s týždeň trvajúcou bolesťou hrdla, horúčkou a výraznou únavou.",
+      "Zväčšené bolestivé krčné lymfatické uzliny, najmä zadné.",
+      "Exsudatívna tonzilitída; po podaní amoxicilínu vznikol generalizovaný makulopapulózny exantém.",
+      "Splenomegália a mierna hepatomegália pri palpácii.",
+      "Krvný obraz: lymfocytóza s atypickými lymfocytmi, mierne zvýšené transaminázy.",
+      "Pozitívne heterofilné protilátky (monospot) a IgM proti EBV (VCA)." ],
+    explain:"Infekčná mononukleóza — najčastejšie EBV. Exantém po aminopenicilíne je typický. Pozor na splenomegáliu — riziko ruptúry, preto dočasný zákaz kontaktných športov." },
+  { answer:"Lymská borelióza",
+    clues:[
+      "41-ročný turista s rozširujúcim sa červeným kožným ložiskom na stehne 10 dní po pobyte v lese.",
+      "Ložisko sa centrálne vyjasňuje (terčovitý tvar), nesvrbí ani nebolí.",
+      "Spomína si na prisatého kliešťa pred ~2 týždňami; teraz má chrípkové príznaky a bolesti kĺbov.",
+      "Léziu charakterizuje erythema migrans s priemerom nad 5 cm.",
+      "Sérológia (ELISA) pozitívna, potvrdená Western blotom (IgM/IgG proti Borrelia).",
+      "Bez liečby hrozí karditída, neuroborelióza (paréza tváre) a artritída veľkých kĺbov." ],
+    explain:"Lymská borelióza — infekcia Borrelia burgdorferi prenášaná kliešťom. Včasná fáza: erythema migrans. Liečba doxycyklínom; pri diseminácii ceftriaxón." },
+  { answer:"Pyelonefritída",
+    clues:[
+      "29-ročná žena s dva dni trvajúcou horúčkou, triaškou a bolesťou v boku.",
+      "Predchádzali jej pálenie pri močení a časté urgentné nutkanie na močenie.",
+      "Nauzea a vracanie; teplota 39,0 °C.",
+      "Výrazná citlivosť v ľavom kostovertebrálnom uhle (tapottement pozitívny).",
+      "Moč: leukocyty, nitrity a leukocytové valce; v krvi leukocytóza a zvýšené CRP.",
+      "Kultivácia moču: E. coli > 10⁵ CFU/ml." ],
+    explain:"Akútna pyelonefritída — vzostupná infekcia obličiek, najčastejšie E. coli. Liečba: empirické ATB (fluorochinolón/cefalosporín); pri komplikáciách hospitalizácia a vylúčenie obštrukcie." },
+  { answer:"Feochromocytóm",
+    clues:[
+      "44-ročný muž s opakovanými záchvatmi búšenia srdca, potenia a intenzívnej bolesti hlavy.",
+      "Záchvaty prichádzajú náhle, trvajú minúty a sprevádza ich pocit úzkosti a bledosť.",
+      "Medzi záchvatmi aj počas nich kolísavo veľmi vysoký tlak, ťažko reagujúci na liečbu.",
+      "Napriek dobrej chuti do jedla chudne; pri palpácii brucha sa záchvat vystupňuje.",
+      "Zvýšené plazmatické a močové metanefríny a katecholamíny.",
+      "CT brucha: dobre ohraničený útvar 4 cm v ľavej nadobličke." ],
+    explain:"Feochromocytóm — nádor drene nadobličky produkujúci katecholamíny. Klasická triáda: bolesť hlavy, potenie, palpitácie s paroxyzmálnou hypertenziou. Pred operáciou najprv α-blokáda, až potom β-blokáda." },
+];
+
+/* ══════════ STATE ══════════ */
+let puzzle, answer, wrongCount = 0, gameEnded = false, selectedDx = null, ddIndex = -1, pastGuesses = [];
+let darkMode = localStorage.getItem('dd_dark') === '1';
+const MAX = 6;
+
+const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+const EPOCH = new Date(2026,5,1);                         // 1. jún 2026 — štart KazuistiCard
+const DAY_MS = 86400000;
+const MONTHS_SK = ['január','február','marec','apríl','máj','jún','júl','august','september','október','november','december'];
+function startOfDay(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+function dateKey(d){ return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+function dateToIdx(d){ return Math.round((startOfDay(d)-EPOCH)/DAY_MS); }
+function idxToDate(i){ return new Date(EPOCH.getTime()+i*DAY_MS); }
+function puzzleForIdx(i){ const n=PUZZLES.length; return PUZZLES[((i%n)+n)%n]; }
+function fmtDate(d){ return `${d.getDate()}. ${MONTHS_SK[d.getMonth()]} ${d.getFullYear()}`; }
+function fmtShort(d){ return `${d.getDate()}.${d.getMonth()+1}.`; }
+function isToday(d){ return dateKey(d)===dateKey(new Date()); }
+let viewDate = startOfDay(new Date());                    // ktorý deň práve hráme
+let dayIdx = dateToIdx(viewDate);
+let gameWon = false;
+
+const blobPink = document.getElementById('blob-pink');
+const blobMint = document.getElementById('blob-mint');
+const input = document.getElementById('dx-input');
+const dropdown = document.getElementById('dropdown');
+
+/* ── mouse-following blobs ── */
+let mouseX=0,mouseY=0,px=0,py=0,mx=0,my=0;
+document.addEventListener('mousemove', e=>{ mouseX=(e.clientX/innerWidth-0.5)*50; mouseY=(e.clientY/innerHeight-0.5)*50; });
+(function loop(){ px+=(mouseX-px)*0.04; py+=(mouseY-py)*0.04; mx+=(-mouseX-mx)*0.04; my+=(-mouseY-my)*0.04;
+  blobPink.style.transform=`translate(${px}px,${py}px)`; blobMint.style.transform=`translate(${mx}px,${my}px)`; requestAnimationFrame(loop); })();
+
+/* ── welcome / boot ── */
+document.getElementById('welcome-btn').addEventListener('click', ()=>{
+  const ws=document.getElementById('welcome-screen');
+  ws.style.transition='opacity 0.4s ease'; ws.style.opacity='0';
+  setTimeout(()=>{ ws.style.display='none'; document.getElementById('main-app').style.display='block'; init(); }, 380);
+});
+
+/* ── dark mode ── */
+function applyDark(){ const b=document.getElementById('dark-btn'); document.body.classList.toggle('dark',darkMode); b.textContent=darkMode?'Svetlý':'Tmavý'; }
+document.getElementById('dark-btn').addEventListener('click', ()=>{ darkMode=!darkMode; localStorage.setItem('dd_dark',darkMode?'1':'0'); applyDark(); reskinBody(); });
+function reskinBody(){ const base=darkMode?'dark':''; const bg=document.body.className.includes('bg-good')?'bg-good':document.body.className.includes('bg-bad')?'bg-bad':''; document.body.className=(base+' '+bg).trim(); }
+
+/* ── clues ── */
+function renderClues(n){
+  const c=document.getElementById('clues'); c.innerHTML='';
+  puzzle.clues.forEach((t,i)=>{
+    const d=document.createElement('div');
+    if(i<n){ d.className='clue'; d.style.animationDelay=(i===n-1&&n>1?'0s':'0s'); d.innerHTML=`<div class="clue-num">${i+1}</div><div>${t}</div>`; }
+    else   { d.className='clue locked'; d.innerHTML=`<div class="clue-num">${i+1}</div><div>Indícia sa odhalí po ďalšom pokuse</div>`; }
+    c.appendChild(d);
+  });
+}
+function updateCounter(){ document.getElementById('counter').textContent = gameEnded?'' : `Pokus ${wrongCount+1} z ${MAX}`; }
+
+/* ── banner ── */
+function banner(type,txt){ const b=document.getElementById('banner'); b.className='banner show '+type; b.textContent=txt; }
+
+/* ── history ── */
+function renderHistory(){ const e=document.getElementById('ghist'); e.innerHTML=pastGuesses.map(g=>`<div class="gchip"><span class="x">✕</span>${g}</div>`).join(''); }
+
+/* ── autocomplete ── */
+function filterDx(q){ const n=norm(q); if(n.length<2) return []; return DIAGNOSES.filter(d=>norm(d).includes(n)).slice(0,12); }
+function hl(text,q){ const n=norm(q); const t=norm(text); const i=t.indexOf(n); if(i<0) return text; return text.slice(0,i)+'<span class="match">'+text.slice(i,i+q.trim().length)+'</span>'+text.slice(i+q.trim().length); }
+function openDropdown(matches,q){
+  dropdown.innerHTML='';
+  if(!matches.length){ dropdown.innerHTML='<div class="dd-empty">Žiadna zhoda — napíš diagnózu a stlač Enter</div>'; dropdown.classList.add('open'); return; }
+  matches.forEach(dx=>{ const d=document.createElement('div'); d.className='dd-item'; d.innerHTML=hl(dx,q);
+    d.addEventListener('mousedown',e=>{ e.preventDefault(); pick(dx); }); dropdown.appendChild(d); });
+  dropdown.classList.add('open'); ddIndex=-1;
+}
+function closeDropdown(){ dropdown.classList.remove('open'); ddIndex=-1; }
+function pick(dx){ selectedDx=dx; input.value=dx; closeDropdown(); }
+
+input.addEventListener('input', ()=>{ selectedDx=null; const q=input.value.trim(); if(q.length<2){ closeDropdown(); return; } openDropdown(filterDx(q),q); });
+input.addEventListener('keydown', e=>{
+  const items=dropdown.querySelectorAll('.dd-item');
+  if(!dropdown.classList.contains('open')){ if(e.key==='Enter'){ e.preventDefault(); submit(); } return; }
+  if(e.key==='ArrowDown'){ e.preventDefault(); ddIndex=Math.min(ddIndex+1,items.length-1); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); ddIndex=Math.max(ddIndex-1,-1); }
+  else if(e.key==='Enter'){ e.preventDefault(); if(ddIndex>=0&&items[ddIndex]) pick(items[ddIndex].textContent); else submit(); return; }
+  else if(e.key==='Escape'){ closeDropdown(); return; }
+  items.forEach((it,i)=>it.classList.toggle('active',i===ddIndex));
+  if(ddIndex>=0&&items[ddIndex]){ selectedDx=items[ddIndex].textContent; input.value=items[ddIndex].textContent; }
+});
+document.addEventListener('click', e=>{ if(!e.target.closest('.ac-wrap')) closeDropdown(); });
+
+/* ── submit ── */
+document.getElementById('submit-btn').addEventListener('click', submit);
+function submit(){
+  if(gameEnded) return;
+  const raw=(selectedDx||input.value).trim();
+  if(!raw){ const w=document.getElementById('input-row'); w.style.animation='shake .4s'; setTimeout(()=>w.style.animation='',420); return; }
+
+  if(norm(raw)===norm(answer)){
+    gameEnded=true; renderClues(puzzle.clues.length);
+    banner('correct',`✓ Správne! Diagnóza na ${wrongCount+1}. pokus.`);
+    endGame(true);
+  } else {
+    pastGuesses.push(raw); wrongCount++; renderHistory();
+    if(wrongCount>=MAX){ gameEnded=true; renderClues(puzzle.clues.length); banner('failed','Nevadí — pozri správnu odpoveď nižšie.'); endGame(false); }
+    else { banner('incorrect','✕ Nesprávne! Odhalili sme ďalšiu indíciu.'); renderClues(wrongCount+1); updateCounter(); setMascot('think'); }
+  }
+  input.value=''; selectedDx=null; closeDropdown();
+}
+
+/* ── end game ── */
+const RESULTS = {
+  win:  { emoji:'', label:'Výborne!',   sub:'Diagnóza správne stanovená.',     bg:'linear-gradient(135deg,#3ecfb2,#27b99d)', cls:'bg-good' },
+  lose: { emoji:'', label:'Nabudúce!',  sub:'Toto si ešte zopakuj.',           bg:'linear-gradient(135deg,#f472b6,#e91680)', cls:'bg-bad' },
+};
+function endGame(won){
+  input.disabled=true; document.getElementById('submit-btn').disabled=true;
+  gameWon=won; updateCounter(); saveDay(won); renderStreak();
+  const cfg = won?RESULTS.win:RESULTS.lose;
+  document.body.className=(darkMode?'dark ':'')+cfg.cls;
+  setMascot(won?'win':'lose');
+
+  document.getElementById('results').innerHTML = `
+    <div class="grade-card" style="background:${cfg.bg};">
+      <span class="grade-emoji">${cfg.emoji}</span>
+      <div class="grade-label">${cfg.label}</div>
+      <div class="grade-sub">${cfg.sub}</div>
+      <div class="answer-pill">${answer}</div>
+    </div>
+    <div class="card" style="animation:fadeUp .5s .1s ease both;">
+      <div class="exp-head">Klinické zhrnutie</div>
+      <div class="exp-body">${puzzle.explain}</div>
+      <button class="share-btn" id="share-btn">Zdieľať výsledok</button>
+    </div>`;
+  document.getElementById('results').style.display='block';
+  if(isToday(viewDate)){ document.getElementById('next-up').classList.add('show'); startCountdown(); }
+  document.getElementById('share-btn').addEventListener('click', share);
+  setTimeout(()=>{ playEnd(won); if(won) confetti(); }, 380);
+  setTimeout(()=>document.getElementById('results').scrollIntoView({behavior:'smooth',block:'nearest'}),120);
+}
+
+/* ── persistence: per-date results map + 7-day streak ── */
+function loadResults(){ try{ return JSON.parse(localStorage.getItem('dd_results')||'{}'); }catch{ return {}; } }
+function saveResults(o){ localStorage.setItem('dd_results',JSON.stringify(o)); }
+function getResult(d){ return loadResults()[dateKey(d)]||null; }
+function saveDay(won){
+  const o=loadResults();
+  o[dateKey(viewDate)]={ won, tries:wrongCount+(won?1:0), guesses:pastGuesses };
+  saveResults(o);
+}
+function renderStreak(){
+  const wrap=document.getElementById('streak-wrap');
+  const res=loadResults();
+  const today=startOfDay(new Date());
+  if(!Object.keys(res).length){ wrap.innerHTML='<span style="font-size:12px;color:#94a3b8;font-weight:600;">Zatiaľ žiadne prípady</span>'; return; }
+  let html='';
+  for(let k=6;k>=0;k--){
+    const d=new Date(today.getTime()-k*DAY_MS);
+    if(dateToIdx(d)<0){ html+='<div class="streak-dot" style="background:rgba(148,163,184,0.13);box-shadow:none;"></div>'; continue; }
+    const r=res[dateKey(d)];
+    if(!r){ html+=`<div class="streak-dot" style="background:rgba(148,163,184,0.13);box-shadow:none;" title="${fmtShort(d)} — nehrané"></div>`; continue; }
+    html+=`<div class="streak-dot" style="background:${r.won?'linear-gradient(135deg,#3ecfb2,#27b99d)':'linear-gradient(135deg,#f472b6,#e91680)'};" title="${fmtShort(d)} — ${r.won?'Správne':'Nesprávne'}">${r.won?'✓':'✕'}</div>`;
+  }
+  wrap.innerHTML=html;
+}
+
+/* ── share image ── */
+function share(){
+  const won=gameWon;
+  const tries=won?wrongCount+1:wrongCount;
+  const score=won?`${tries}/${MAX}`:`X/${MAX}`;
+  const diagnosisName=answer||'';
+
+  const W=480, H=700;
+  const dpr=window.devicePixelRatio||2;
+  const canvas=document.createElement('canvas');
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  function drawCard(logoImg){
+    // randomise theme: pink or teal
+    const usePink=Math.random()<0.5;
+    const themes={
+      pink:{ g0:'#c91270', g1:'#e91680', g2:'#f472b6', blob:'rgba(62,207,178,0.40)', accent:'#e91680' },
+      teal:{ g0:'#0e7b68', g1:'#1a9e86', g2:'#3ecfb2', blob:'rgba(233,22,128,0.35)',  accent:'#3ecfb2' }
+    };
+    const theme=usePink?themes.pink:themes.teal;
+    const squareCorrectLabel=usePink?'#e91680':'#1a9e86';
+
+    // background gradient
+    const bg=ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,theme.g0); bg.addColorStop(0.5,theme.g1); bg.addColorStop(1,theme.g2);
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    // decorative blobs
+    const radBlob=(x,y,r,c)=>{ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,c); g.addColorStop(1,'transparent'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); };
+    radBlob(W+60, -60, 220, theme.blob);
+    radBlob(-60, H+40, 200,'rgba(255,255,255,0.07)');
+
+    // ── KazuistiCard label ──
+    ctx.textAlign='center';
+    ctx.font=`700 15px "Plus Jakarta Sans", system-ui, sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.60)';
+    ctx.fillText('KazuistiCard', W/2, 54);
+
+    // ── date (of the played case) ──
+    const dateStr=fmtDate(viewDate);
+    ctx.font=`500 13px "Plus Jakarta Sans", system-ui, sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.42)';
+    ctx.fillText(dateStr, W/2, 74);
+
+    // ── score ──
+    ctx.font=`800 56px "Plus Jakarta Sans", system-ui, sans-serif`;
+    ctx.fillStyle='white';
+    ctx.fillText(score, W/2, 152);
+
+    ctx.font=`500 14px "Plus Jakarta Sans", system-ui, sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.65)';
+    ctx.fillText(won?'Diagnóza správne stanovená':'Tentoraz to nevyšlo', W/2, 176);
+
+    // ── attempt squares ──
+    const SQ=52, GAP=10;
+    const gridW=MAX*(SQ+GAP)-GAP;
+    const gridX=(W-gridW)/2, gridY=204;
+
+    for(let i=0;i<MAX;i++){
+      const x=gridX+i*(SQ+GAP), y=gridY, r=12;
+      let fill, label, labelColor;
+      if(i<wrongCount){
+        fill='rgba(0,0,0,0.22)'; label=String(i+1); labelColor='rgba(255,255,255,0.70)';
+      } else if(i===wrongCount&&won){
+        fill='rgba(255,255,255,0.95)'; label=String(i+1); labelColor=squareCorrectLabel;
+      } else {
+        fill='rgba(255,255,255,0.12)'; label=''; labelColor='transparent';
+      }
+      ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+SQ-r,y); ctx.quadraticCurveTo(x+SQ,y,x+SQ,y+r);
+      ctx.lineTo(x+SQ,y+SQ-r); ctx.quadraticCurveTo(x+SQ,y+SQ,x+SQ-r,y+SQ);
+      ctx.lineTo(x+r,y+SQ); ctx.quadraticCurveTo(x,y+SQ,x,y+SQ-r);
+      ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+      ctx.fillStyle=fill; ctx.fill();
+      if(label){
+        ctx.font=`700 16px "Plus Jakarta Sans", system-ui, sans-serif`;
+        ctx.fillStyle=labelColor; ctx.textAlign='center';
+        ctx.fillText(label, x+SQ/2, y+SQ/2+6);
+      }
+    }
+
+    // ── diagnosis pill ──
+    const pillY=gridY+SQ+28;
+    const pillH=48, pillR=pillH/2;
+    ctx.font=`700 17px "Plus Jakarta Sans", system-ui, sans-serif`;
+    const pillW=Math.min(W-64, ctx.measureText(diagnosisName).width+60);
+    const pillX=(W-pillW)/2;
+    ctx.beginPath(); ctx.moveTo(pillX+pillR,pillY); ctx.lineTo(pillX+pillW-pillR,pillY);
+    ctx.quadraticCurveTo(pillX+pillW,pillY,pillX+pillW,pillY+pillR);
+    ctx.lineTo(pillX+pillW,pillY+pillH-pillR); ctx.quadraticCurveTo(pillX+pillW,pillY+pillH,pillX+pillW-pillR,pillY+pillH);
+    ctx.lineTo(pillX+pillR,pillY+pillH); ctx.quadraticCurveTo(pillX,pillY+pillH,pillX,pillY+pillH-pillR);
+    ctx.lineTo(pillX,pillY+pillR); ctx.quadraticCurveTo(pillX,pillY,pillX+pillR,pillY); ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle='white'; ctx.textAlign='center';
+    ctx.fillText(diagnosisName, W/2, pillY+pillH/2+6);
+
+    // ── divider ──
+    const divY=pillY+pillH+34;
+    ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(60,divY); ctx.lineTo(W-60,divY); ctx.stroke();
+
+    // ── CTA ──
+    ctx.font=`700 20px "Plus Jakarta Sans", system-ui, sans-serif`;
+    ctx.fillStyle='white'; ctx.textAlign='center';
+    ctx.fillText('Zvládneš to aj ty?', W/2, divY+34);
+
+    ctx.font=`500 14px "Plus Jakarta Sans", system-ui, sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.65)';
+    ctx.fillText('Skús dennú kazuistiku na', W/2, divY+56);
+
+    ctx.font=`700 15px "Plus Jakarta Sans", system-ui, sans-serif`;
+    ctx.fillStyle='rgba(255,255,255,0.90)';
+    ctx.fillText('mladilekari.sk', W/2, divY+76);
+
+    // ── logo at bottom ──
+    const logoY=divY+110;
+    if(logoImg){
+      const lh=46, lw=lh*(logoImg.naturalWidth/logoImg.naturalHeight||2.5);
+      ctx.globalAlpha=0.85;
+      ctx.drawImage(logoImg,(W-lw)/2,logoY,lw,lh);
+      ctx.globalAlpha=1;
+    } else {
+      ctx.font=`700 20px "Plus Jakarta Sans", system-ui, sans-serif`;
+      ctx.fillStyle='rgba(255,255,255,0.80)'; ctx.textAlign='center';
+      ctx.fillText('mladí lekári', W/2, logoY+26);
+    }
+  }
+
+  function exportCanvas(){
+    canvas.toBlob(b=>{
+      const file=new File([b],'kazuisticard.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        navigator.share({files:[file],title:'KazuistiCard'}).catch(()=>{});
+      } else {
+        const a=document.createElement('a');
+        a.href=URL.createObjectURL(b);
+        a.download='kazuisticard.png';
+        a.click();
+        toast('Obrázok uložený');
+      }
+    },'image/png');
+  }
+
+  // load logo then draw; fall back immediately on error
+  const logo=new Image();
+  logo.crossOrigin='anonymous';
+  logo.onload=()=>{ drawCard(logo); exportCanvas(); };
+  logo.onerror=()=>{ drawCard(null); exportCanvas(); };
+  logo.src='logo.png.png';
+}
+function toast(m){ const t=document.createElement('div'); t.textContent=m;
+  t.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 22px;border-radius:999px;font-weight:700;font-size:13px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.25);';
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2200); }
+
+/* ── countdown ── */
+function startCountdown(){ const tick=()=>{ const now=new Date(); const next=new Date(); next.setHours(24,0,0,0); const d=next-now;
+  const h=String(Math.floor(d/3.6e6)).padStart(2,'0'), m=String(Math.floor(d%3.6e6/6e4)).padStart(2,'0'), s=String(Math.floor(d%6e4/1e3)).padStart(2,'0');
+  const el=document.getElementById('cdtimer'); if(el) el.textContent=`${h}:${m}:${s}`; }; tick(); setInterval(tick,1000); }
+
+function setMascot(state){}
+
+/* ── sound ── */
+function playEnd(won){ try{ const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const notes = won?[523,659,784,1047,1319]:[440,415,392,349];
+  const t0 = won?[0,.13,.26,.39,.52]:[0,.38,.76,1.14];
+  notes.forEach((f,i)=>{ const o=ctx.createOscillator(),g=ctx.createGain(); o.connect(g); g.connect(ctx.destination);
+    o.type=won?'sine':'sine'; o.frequency.value=f; const t=ctx.currentTime+t0[i];
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(won?(i===4?.3:.22):.15,t+.05);
+    g.gain.exponentialRampToValueAtTime(.001,t+(won?(i===4?1.1:.3):.55)); o.start(t); o.stop(t+1.3); }); }catch(e){} }
+
+/* ── confetti ── */
+function confetti(){ const c=document.createElement('canvas'); c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;'; document.body.appendChild(c);
+  const x=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight;
+  const COLORS=['#e91680','#c91270','#f472b6','#f9a8d4','#3ecfb2','#27b99d','#7ff5e2','#ffffff'];
+  const P=Array.from({length:160},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*0.5,w:6+Math.random()*9,h:3+Math.random()*5,color:COLORS[Math.floor(Math.random()*COLORS.length)],rot:Math.random()*6.28,rs:(Math.random()-.5)*.18,vx:(Math.random()-.5)*2.5,vy:2.5+Math.random()*3,o:1,shape:Math.random()>.5?'r':'c'}));
+  let f=0; (function d(){ x.clearRect(0,0,c.width,c.height); let alive=false;
+    P.forEach(p=>{ p.x+=p.vx+Math.sin(f*.04+p.y*.02)*.6; p.y+=p.vy; p.rot+=p.rs; if(p.y>c.height*.75)p.o-=.025; if(p.o>0)alive=true;
+      x.save(); x.globalAlpha=Math.max(0,p.o); x.translate(p.x,p.y); x.rotate(p.rot); x.fillStyle=p.color;
+      if(p.shape==='c'){ x.beginPath(); x.arc(0,0,p.w/2,0,6.28); x.fill(); } else x.fillRect(-p.w/2,-p.h/2,p.w,p.h); x.restore(); });
+    f++; if(alive&&f<350) requestAnimationFrame(d); else c.remove(); })(); }
+
+/* ── init ── */
+function init(){
+  applyDark();
+  loadDay(dateToIdx(startOfDay(new Date())));
+}
+
+/* ── archive ── */
+function openArchive(){
+  const m=document.getElementById('archive-modal');
+  const grid=document.getElementById('arch-grid');
+  const res=loadResults();
+  const todayIdxv=dateToIdx(startOfDay(new Date()));
+  let html='';
+  for(let i=todayIdxv;i>=0;i--){
+    const d=idxToDate(i);
+    const r=res[dateKey(d)];
+    const isT=(i===todayIdxv);
+    let cls='open', badge='Hrať', state='archív';
+    if(r){ cls=r.won?'won':'lost'; badge=r.won?'✓':'✕'; state=r.won?`${r.tries}/${MAX}`:'nevyriešené'; }
+    else if(isT){ badge='Dnes'; state='nový'; }
+    html+=`<button type="button" class="arch-day ${cls}${isT?' today':''}" data-idx="${i}">`
+        + `<span class="arch-date">${fmtShort(d)}</span>`
+        + `<span class="arch-badge">${badge}</span>`
+        + `<span class="arch-state">${state}</span></button>`;
+  }
+  grid.innerHTML=html;
+  grid.querySelectorAll('.arch-day').forEach(b=>b.addEventListener('click',()=>{
+    closeArchive();
+    loadDay(parseInt(b.dataset.idx,10));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+  m.style.display='flex'; requestAnimationFrame(()=>m.classList.add('open'));
+}
+function closeArchive(){ const m=document.getElementById('archive-modal'); m.classList.remove('open'); setTimeout(()=>{ m.style.display='none'; },210); }
+document.getElementById('archive-btn').addEventListener('click', openArchive);
+document.getElementById('arch-close').addEventListener('click', closeArchive);
+document.getElementById('archive-modal').addEventListener('click', e=>{ if(e.target.id==='archive-modal') closeArchive(); });
+function resetGameState(){
+  wrongCount=0; pastGuesses=[]; gameEnded=false; gameWon=false; selectedDx=null;
+  input.disabled=false; document.getElementById('submit-btn').disabled=false;
+  input.value='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('results').innerHTML='';
+  document.getElementById('next-up').classList.remove('show');
+  document.getElementById('banner').className='banner';
+  document.getElementById('ghist').innerHTML='';
+  document.body.className=darkMode?'dark':'';
+}
+/* loadDay(idx): load the case for a given day. Unplayed → fresh game (answer hidden until solved). Played → locked result. */
+function loadDay(idx){
+  dayIdx=idx; viewDate=idxToDate(idx);
+  puzzle=puzzleForIdx(idx); answer=puzzle.answer;
+  resetGameState();
+  updateDayLabel();
+  renderStreak(); setMascot('idle');
+  const r=getResult(viewDate);
+  if(r){
+    wrongCount=r.guesses?.length||0; pastGuesses=r.guesses||[]; gameEnded=true; gameWon=r.won;
+    renderClues(puzzle.clues.length); renderHistory();
+    banner(r.won?'correct':'failed', r.won?`✓ Vyriešené na ${r.tries}. pokus.`:'Tento prípad je za tebou.');
+    endGameLocked(r.won);
+  } else {
+    renderClues(1); updateCounter();
+    input.focus();
+  }
+}
+function updateDayLabel(){
+  const el=document.getElementById('day-label'); if(!el) return;
+  el.textContent = isToday(viewDate) ? `Dnešný prípad · ${fmtDate(viewDate)}` : `Archív · ${fmtDate(viewDate)}`;
+}
+function endGameLocked(won){
+  input.disabled=true; document.getElementById('submit-btn').disabled=true;
+  const cfg=won?RESULTS.win:RESULTS.lose; document.body.className=(darkMode?'dark ':'')+cfg.cls; setMascot(won?'win':'lose');
+  document.getElementById('results').innerHTML=`
+    <div class="grade-card" style="background:${cfg.bg};">
+      <span class="grade-emoji">${cfg.emoji}</span><div class="grade-label">${cfg.label}</div>
+      <div class="grade-sub">${cfg.sub}</div><div class="answer-pill">${answer}</div></div>
+    <div class="card" style="animation:fadeUp .5s .1s ease both;">
+      <div class="exp-head">Klinické zhrnutie</div><div class="exp-body">${puzzle.explain}</div>
+      <button class="share-btn" id="share-btn">Zdieľať výsledok</button></div>`;
+  document.getElementById('results').style.display='block';
+  if(isToday(viewDate)){ document.getElementById('next-up').classList.add('show'); startCountdown(); }
+  document.getElementById('share-btn').addEventListener('click', share);
+}
+</script>
+</body>
+</html>
