@@ -11,6 +11,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { min-height: 100vh; overflow-x: hidden; }
 
+    /* ── Theme tokens (set live per case-specialty by applyTheme) ── */
+    :root {
+      --accent:       #e91680;
+      --accent2:      #f472b6;
+      --accent-strong:#c91270;
+      --accent-soft:  rgba(233,22,128,0.09);
+      --accent-glow:  rgba(233,22,128,0.30);
+      --mint:  #3ecfb2;
+      --mint2: #27b99d;
+    }
+    /* smooth morph when the theme changes between cases */
+    .btn-primary, .field, .clue, .clue-num, .theme-banner, .pip, #cdtimer,
+    .day-label, .xp-fill, .score-ring-fill { transition: background 0.55s ease, border-color 0.55s ease, color 0.55s ease, box-shadow 0.55s ease, stroke 0.55s ease; }
+
     body {
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       background: #fff;
@@ -101,7 +115,7 @@
     .clue {
       background: rgba(255,255,255,0.97);
       border: 1px solid rgba(226,232,240,0.9);
-      border-left: 4px solid #3ecfb2;
+      border-left: 4px solid var(--accent);
       border-radius: 16px;
       padding: 16px 22px;
       font-size: 14.5px; line-height: 1.6; color: #1e293b;
@@ -112,10 +126,10 @@
     }
     .clue-num {
       flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
-      background: linear-gradient(135deg,#3ecfb2,#27b99d);
+      background: linear-gradient(135deg,var(--accent),var(--accent-strong));
       display: flex; align-items: center; justify-content: center;
       font-size: 12px; font-weight: 800; color: #fff; margin-top: 1px;
-      box-shadow: 0 2px 8px rgba(62,207,178,0.35);
+      box-shadow: 0 2px 8px var(--accent-glow);
     }
     .clue.locked {
       background: rgba(226,232,240,0.55); border-color: transparent; border-left-color: #cbd5e1;
@@ -131,9 +145,9 @@
       border: 1.5px solid #e2e8f0; border-radius: 14px;
       padding: 14px 16px; font-size: 15px; color: #0f172a; outline: none;
       font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-      caret-color: #e91680;
+      caret-color: var(--accent);
     }
-    .field:focus { border-color: #e91680; box-shadow: 0 0 0 4px rgba(233,22,128,0.1); background: #fff; }
+    .field:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); background: #fff; }
     .field:disabled { background: rgba(241,245,249,0.7); color: #94a3b8; cursor: not-allowed; }
 
     .sublabel { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#94a3b8; margin-bottom:12px; }
@@ -152,7 +166,7 @@
     .dd-item { padding: 11px 16px; font-size: 14px; color: #334155; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: background 0.1s, color 0.1s; }
     .dd-item:last-child { border-bottom: none; }
     .dd-item:hover, .dd-item.active { background: rgba(62,207,178,0.12); color: #0d9488; font-weight: 600; }
-    .dd-item .match { color: #e91680; font-weight: 700; }
+    .dd-item .match { color: var(--accent); font-weight: 700; }
     .dd-item .dd-alias-tag { color:#94a3b8; font-weight:500; font-size:12px; margin-left:6px; }
     .dd-empty { padding: 13px 16px; font-size: 14px; color: #94a3b8; font-style: italic; }
     .dd-group-header { padding: 10px 16px; font-size: 13px; font-weight: 700; color: #64748b; cursor: pointer;
@@ -168,8 +182,8 @@
     .btn-primary {
       flex-shrink: 0; border: none; border-radius: 14px; padding: 14px 26px;
       color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
-      background: linear-gradient(135deg,#e91680,#f472b6);
-      box-shadow: 0 6px 20px rgba(233,22,128,0.3); transition: transform 0.12s, filter 0.15s;
+      background: linear-gradient(135deg,var(--accent),var(--accent2));
+      box-shadow: 0 6px 20px var(--accent-glow); transition: transform 0.12s, filter 0.15s, background 0.55s ease, box-shadow 0.55s ease;
       display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap;
     }
     .btn-primary:hover { filter: brightness(1.05); }
@@ -214,8 +228,8 @@
 
     .next-up { text-align:center; margin-top:18px; font-size:13px; color:#94a3b8; font-weight:500; display:none; }
     .next-up.show { display:block; }
-    #cdtimer { font-weight:800; color:#e91680; font-size:16px; }
-    body.dark #cdtimer { color:#f472b6; }
+    #cdtimer { font-weight:800; color:var(--accent); font-size:16px; }
+    body.dark #cdtimer { color:var(--accent2); }
 
     /* ── Streak dots ── */
     .streak-wrap { display:flex; justify-content:center; align-items:center; gap:7px; margin-bottom:18px; min-height:30px; }
@@ -268,6 +282,64 @@
     @keyframes ecgScroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
     .ecg-track { display:flex; width:200%; animation:ecgScroll 3.5s linear infinite; will-change:transform; }
     .ecg-tile  { flex:0 0 50%; height:40px; display:block; overflow:visible; }
+
+    /* ── Themed day / specialty banner ── */
+    .theme-banner {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12.5px; font-weight:800; letter-spacing:0.01em;
+      color:var(--accent-strong); background:var(--accent-soft);
+      border:1.5px solid var(--accent-glow); padding:7px 16px; border-radius:999px;
+      box-shadow:0 2px 12px var(--accent-soft);
+    }
+    .theme-banner svg { width:15px; height:15px; stroke:var(--accent); flex-shrink:0; }
+    body.dark .theme-banner { color:var(--accent2); background:rgba(255,255,255,0.05); }
+    .day-label { font-size:12.5px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:6px 14px; border-radius:999px; }
+    @keyframes bannerPop { 0%{transform:scale(0.85);opacity:0;} 60%{transform:scale(1.05);} 100%{transform:scale(1);opacity:1;} }
+    .theme-banner.pop { animation:bannerPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+    /* ── Attempt pips (replaces plain counter) ── */
+    .pips { display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:9px; }
+    .pip {
+      width:34px; height:7px; border-radius:999px; background:rgba(148,163,184,0.25);
+      position:relative; overflow:hidden;
+    }
+    .pip.spent { background:linear-gradient(90deg,#fb7185,#e11d48); box-shadow:0 1px 6px rgba(225,29,72,0.35); }
+    .pip.current { background:var(--accent-soft); }
+    .pip.current::after { content:''; position:absolute; inset:0; border-radius:999px; border:2px solid var(--accent); animation:pipPulse 1.3s ease-in-out infinite; }
+    .pip.win { background:linear-gradient(90deg,var(--mint),var(--mint2)); box-shadow:0 1px 6px rgba(62,207,178,0.4); }
+    @keyframes pipPulse { 0%,100%{opacity:0.55;} 50%{opacity:1;} }
+    body.dark .pip { background:rgba(148,163,184,0.15); }
+
+    /* ── XP / level chip (header) ── */
+    .xp-chip {
+      position:fixed; top:16px; left:16px; z-index:200;
+      display:flex; align-items:center; gap:9px; padding:6px 12px 6px 8px;
+      background:rgba(255,255,255,0.6); border:1.5px solid rgba(255,255,255,0.5); border-radius:999px;
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 4px 16px rgba(15,23,42,0.08);
+      font-family:inherit; cursor:default; user-select:none;
+    }
+    body.dark .xp-chip { background:rgba(15,23,42,0.7); border-color:rgba(255,255,255,0.08); }
+    .xp-lvl { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:800; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-strong)); box-shadow:0 2px 8px var(--accent-glow); }
+    .xp-meta { display:flex; flex-direction:column; gap:3px; }
+    .xp-label { font-size:9.5px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:#94a3b8; line-height:1; }
+    .xp-bar { width:74px; height:5px; border-radius:999px; background:rgba(148,163,184,0.28); overflow:hidden; }
+    .xp-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--accent),var(--accent2)); width:0%; transition:width 0.9s cubic-bezier(0.22,1,0.36,1); }
+
+    /* ── Score ring on result card ── */
+    .score-wrap { display:flex; align-items:center; justify-content:center; gap:20px; margin-top:14px; }
+    .score-ring { position:relative; width:96px; height:96px; flex-shrink:0; }
+    .score-ring svg { transform:rotate(-90deg); }
+    .score-ring-bg { stroke:rgba(255,255,255,0.25); }
+    .score-ring-fill { stroke:#fff; stroke-linecap:round; transition:stroke-dashoffset 1.1s cubic-bezier(0.22,1,0.36,1); }
+    .score-ring-num { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; }
+    .score-ring-num b { font-size:30px; font-weight:800; line-height:1; }
+    .score-ring-num small { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; opacity:0.8; margin-top:3px; }
+    .score-side { text-align:left; color:#fff; }
+    .score-xp { font-size:26px; font-weight:800; letter-spacing:-0.01em; }
+    .score-xp small { font-size:14px; opacity:0.85; font-weight:700; }
+    .score-cap { font-size:12.5px; opacity:0.82; margin-top:2px; font-weight:600; }
+    .score-streak { margin-top:8px; font-size:12px; font-weight:700; opacity:0.9; display:inline-flex; align-items:center; gap:6px; }
   </style>
 </head>
 <body>
@@ -316,6 +388,15 @@
 
 <!-- ══ DARK MODE TOGGLE ══ -->
 <button id="dark-btn">Tmavý</button>
+
+<!-- ══ XP / LEVEL CHIP ══ -->
+<div class="xp-chip" id="xp-chip" style="display:none;" title="Tvoje skúsenostné body">
+  <div class="xp-lvl" id="xp-lvl">1</div>
+  <div class="xp-meta">
+    <span class="xp-label" id="xp-label">Level 1 · 0 XP</span>
+    <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+  </div>
+</div>
 
 <!-- ══ BACKGROUND LAYER ══ -->
 <div id="blob-layer">
@@ -376,9 +457,14 @@
       </p>
     </header>
 
+    <!-- Themed day / specialty banner -->
+    <div style="display:flex; justify-content:center; margin-bottom:12px;">
+      <span class="theme-banner" id="theme-banner"></span>
+    </div>
+
     <!-- Day label + archive -->
     <div style="display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:14px; flex-wrap:wrap;">
-      <span id="day-label" style="font-size:12.5px; font-weight:700; color:#e91680; background:rgba(233,22,128,0.08); padding:6px 14px; border-radius:999px;"></span>
+      <span id="day-label" class="day-label"></span>
       <button id="archive-btn" type="button" style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#0f766e; background:rgba(62,207,178,0.13); border:none; padding:6px 14px; border-radius:999px; cursor:pointer; font-family:inherit;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>
         Archív
@@ -388,7 +474,8 @@
     <!-- Streak dots -->
     <div class="streak-wrap" id="streak-wrap"></div>
 
-    <!-- Attempt counter -->
+    <!-- Attempt pips + counter -->
+    <div class="pips" id="pips"></div>
     <div class="counter" id="counter">Pokus 1 z 6</div>
 
     <!-- Clue cards -->
@@ -1285,7 +1372,7 @@ function renderClues(n){
     c.appendChild(d);
   });
 }
-function updateCounter(){ document.getElementById('counter').textContent = gameEnded?'' : `Pokus ${wrongCount+1} z ${MAX}`; }
+function updateCounter(){ document.getElementById('counter').textContent = gameEnded?'' : `Pokus ${wrongCount+1} z ${MAX}`; renderPips(); }
 
 /* ── banner ── */
 function banner(type,txt){ const b=document.getElementById('banner'); b.className='banner show '+type; b.textContent=txt; }
@@ -1420,24 +1507,17 @@ const RESULTS = {
 };
 function endGame(won){
   input.disabled=true; document.getElementById('submit-btn').disabled=true;
-  gameWon=won; updateCounter(); saveDay(won); renderStreak();
+  gameWon=won; updateCounter(); saveDay(won);
+  const points=won?(MAX-wrongCount):0;
+  const awardedXp=won?awardXP(points):0;
+  renderStreak();
   const cfg = won?RESULTS.win:RESULTS.lose;
   document.body.className=(darkMode?'dark ':'')+cfg.cls;
   setMascot(won?'win':'lose');
 
-  document.getElementById('results').innerHTML = `
-    <div class="grade-card" style="background:${cfg.bg};">
-      <span class="grade-emoji">${cfg.emoji}</span>
-      <div class="grade-label">${cfg.label}</div>
-      <div class="grade-sub">${cfg.sub}</div>
-      <div class="answer-pill">${answer}</div>
-    </div>
-    <div class="card" style="animation:fadeUp .5s .1s ease both;">
-      <div class="exp-head">Klinické zhrnutie</div>
-      <div class="exp-body">${puzzle.explain}</div>
-      <button class="share-btn" id="share-btn">Zdieľať výsledok</button>
-    </div>`;
+  document.getElementById('results').innerHTML = buildResultCard(won, points, awardedXp, computeStreak(), false);
   document.getElementById('results').style.display='block';
+  animateResult(awardedXp);
   if(isToday(viewDate)){ document.getElementById('next-up').classList.add('show'); startCountdown(); }
   document.getElementById('share-btn').addEventListener('click', share);
   setTimeout(()=>{ playEnd(won); if(won) confetti(); }, 380);
@@ -1652,9 +1732,152 @@ function confetti(){ const c=document.createElement('canvas'); c.style.cssText='
       if(p.shape==='c'){ x.beginPath(); x.arc(0,0,p.w/2,0,6.28); x.fill(); } else x.fillRect(-p.w/2,-p.h/2,p.w,p.h); x.restore(); });
     f++; if(alive&&f<350) requestAnimationFrame(d); else c.remove(); })(); }
 
+/* ══════════ THEME ENGINE (accent recolors per case specialty) ══════════ */
+const THEMES = {
+  brand:  { label:'Klinický prípad',        accent:'#e91680', accent2:'#f472b6', strong:'#c91270', soft:'rgba(233,22,128,0.09)', glow:'rgba(233,22,128,0.30)', icon:'stetoskop' },
+  kardio: { label:'Kardiológia',            accent:'#e11d48', accent2:'#fb7185', strong:'#be123c', soft:'rgba(225,29,72,0.10)',  glow:'rgba(225,29,72,0.32)',  icon:'srdce' },
+  neuro:  { label:'Neurológia',             accent:'#4f46e5', accent2:'#818cf8', strong:'#4338ca', soft:'rgba(79,70,229,0.11)',  glow:'rgba(79,70,229,0.32)',  icon:'neuron' },
+  onko:   { label:'Onkológia / hematológia',accent:'#059669', accent2:'#34d399', strong:'#047857', soft:'rgba(5,150,105,0.11)',  glow:'rgba(5,150,105,0.32)',  icon:'stuzka' },
+  pneumo: { label:'Pneumológia',            accent:'#0891b2', accent2:'#22d3ee', strong:'#0e7490', soft:'rgba(8,145,178,0.11)',  glow:'rgba(8,145,178,0.32)',  icon:'pluca' },
+  gastro: { label:'Gastroenterológia',      accent:'#d97706', accent2:'#fbbf24', strong:'#b45309', soft:'rgba(217,119,6,0.11)',  glow:'rgba(217,119,6,0.32)',  icon:'kvapka' },
+  endo:   { label:'Endokrinológia',         accent:'#7c3aed', accent2:'#a78bfa', strong:'#6d28d9', soft:'rgba(124,58,237,0.11)', glow:'rgba(124,58,237,0.32)', icon:'iskra' },
+  infekt: { label:'Infekčné choroby',       accent:'#ea580c', accent2:'#fb923c', strong:'#c2410c', soft:'rgba(234,88,12,0.11)',  glow:'rgba(234,88,12,0.32)',  icon:'virus' },
+  nefro:  { label:'Nefrológia / urológia',  accent:'#0d9488', accent2:'#2dd4bf', strong:'#0f766e', soft:'rgba(13,148,136,0.11)', glow:'rgba(13,148,136,0.32)', icon:'kvapka' },
+  urgent: { label:'Urgentná medicína',      accent:'#dc2626', accent2:'#f87171', strong:'#b91c1c', soft:'rgba(220,38,38,0.11)',  glow:'rgba(220,38,38,0.32)',  icon:'vystraha' },
+};
+const SPEC_TO_THEME = {
+  kardiologia:'kardio', neurologia:'neuro', nador:'onko', hematologia:'onko',
+  pneumologia:'pneumo', gastroenterologia:'gastro', hepatobiliarna:'gastro',
+  endokrinologia:'endo', infekcne:'infekt', nefrologia_urologia:'nefro',
+  urgentna_toxikologia:'urgent',
+};
+/* config-driven weekly named days (viewDate.getDay(): 0=Ne … 1=Po, 3=St, 5=Pi) */
+const DAY_THEMES = {
+  1: { theme:'kardio', name:'Kardio pondelok' },
+  3: { theme:'onko',   name:'Onko streda' },
+  5: { theme:'neuro',  name:'Neuro piatok' },
+};
+const ICONS = {
+  srdce:   '<path d="M12 20s-6.5-4.4-9-8C1.5 9.3 3 6 6 6c1.9 0 3 1.1 4 2.5C11 7.1 12.1 6 14 6c3 0 4.5 3.3 3 6-2.5 3.6-9 8-9 8z"/>',
+  neuron:  '<circle cx="12" cy="12" r="2.6"/><path d="M12 9.4V5M12 15v4.5M9.4 12H5M15 12h4.5M9.6 9.6 6.6 6.6M14.4 9.6l3-3M9.6 14.4l-3 3M14.4 14.4l3 3"/>',
+  stuzka:  '<path d="M8.5 4c-1.2 3.6 1.4 6.4 3.5 8.4 2.1-2 4.7-4.8 3.5-8.4M12 12.4 8.5 21M12 12.4 15.5 21"/>',
+  pluca:   '<path d="M12 4v7M8.6 11c-2.2.3-3.6 2.4-3.6 5.2 0 2 .7 3 2.2 3 1.4 0 2.4-1 2.4-2.8V12c0-.7-.5-1.1-1-1zM15.4 11c2.2.3 3.6 2.4 3.6 5.2 0 2-.7 3-2.2 3-1.4 0-2.4-1-2.4-2.8V12c0-.7.5-1.1 1-1z"/>',
+  kvapka:  '<path d="M12 4s5.5 6.2 5.5 10a5.5 5.5 0 0 1-11 0C6.5 10.2 12 4 12 4z"/>',
+  iskra:   '<path d="M12 3v4M12 17v4M4 12h4M16 12h4M6.3 6.3l2.4 2.4M15.3 15.3l2.4 2.4M17.7 6.3l-2.4 2.4M8.7 15.3l-2.4 2.4"/>',
+  virus:   '<circle cx="12" cy="12" r="4.4"/><path d="M12 3.2v3M12 17.8v3M3.2 12h3M17.8 12h3M6 6l1.8 1.8M16.2 16.2 18 18M18 6l-1.8 1.8M7.8 16.2 6 18"/>',
+  vystraha:'<path d="M12 4l8.5 15H3.5L12 4z"/><path d="M12 10v4M12 17h.01"/>',
+  stetoskop:'<path d="M6 4v5a4 4 0 0 0 8 0V4M10 15v1a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="12" r="1.6"/>',
+};
+function icon(name){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||ICONS.stetoskop}</svg>`; }
+function resolveThemeKey(pz){
+  const d=DX_BY_NAME.get(pz.answer); if(!d) return 'brand';
+  if(d.categories.includes('nador')) return 'onko';
+  return SPEC_TO_THEME[d.categories[0]] || 'brand';
+}
+function applyTheme(themeKey){
+  const t=THEMES[themeKey]||THEMES.brand;
+  const r=document.documentElement.style;
+  r.setProperty('--accent',t.accent); r.setProperty('--accent2',t.accent2);
+  r.setProperty('--accent-strong',t.strong); r.setProperty('--accent-soft',t.soft); r.setProperty('--accent-glow',t.glow);
+  document.body.dataset.theme=themeKey;
+}
+function updateThemeBanner(themeKey){
+  const el=document.getElementById('theme-banner'); if(!el) return;
+  const t=THEMES[themeKey]||THEMES.brand;
+  const dt=DAY_THEMES[viewDate.getDay()];
+  const label=(dt && dt.theme===themeKey) ? dt.name : (t.label||'Klinický prípad');
+  el.innerHTML=icon(t.icon)+`<span>${label}</span>`;
+  el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+}
+
+/* ══════════ ATTEMPT PIPS ══════════ */
+function renderPips(){
+  const wrap=document.getElementById('pips'); if(!wrap) return;
+  let html='';
+  for(let i=0;i<MAX;i++){
+    let cls='pip';
+    if(gameEnded && gameWon && i===wrongCount) cls='pip win';
+    else if(i<wrongCount) cls='pip spent';
+    else if(!gameEnded && i===wrongCount) cls='pip current';
+    html+=`<div class="${cls}"></div>`;
+  }
+  wrap.innerHTML=html;
+}
+
+/* ══════════ XP / LEVEL ══════════ */
+const XP_PER_LEVEL=150;
+function loadXP(){ return parseInt(localStorage.getItem('dd_xp')||'0',10)||0; }
+function saveXP(v){ localStorage.setItem('dd_xp',String(v)); }
+function levelFromXp(xp){ return Math.floor(xp/XP_PER_LEVEL)+1; }
+function renderXP(){
+  const xp=loadXP(), lvl=levelFromXp(xp), into=xp%XP_PER_LEVEL, pct=Math.round(into/XP_PER_LEVEL*100);
+  const chip=document.getElementById('xp-chip'); if(chip) chip.style.display='flex';
+  const l=document.getElementById('xp-lvl'); if(l) l.textContent=lvl;
+  const lab=document.getElementById('xp-label'); if(lab) lab.textContent=`Level ${lvl} · ${xp} XP`;
+  const fill=document.getElementById('xp-fill'); if(fill) fill.style.width=pct+'%';
+}
+function awardXP(points){ const add=points*10; saveXP(loadXP()+add); renderXP(); return add; }
+
+/* current consecutive-solved streak ending at viewDate (going back day by day) */
+function computeStreak(){
+  const res=loadResults(); let n=0;
+  for(let i=dateToIdx(viewDate); i>=0; i--){
+    const r=res[dateKey(idxToDate(i))];
+    if(r && r.won) n++; else break;
+  }
+  return n;
+}
+
+/* animated count-up for the result-card XP number (with a snap-to-final safety) */
+function countUp(el,to,ms){
+  if(!el) return; const start=performance.now();
+  (function tick(now){ const p=Math.min(1,(now-start)/ms); el.textContent='+'+Math.round(p*to); if(p<1) requestAnimationFrame(tick); })(start);
+  setTimeout(()=>{ el.textContent='+'+to; }, ms+80);   // guarantees final value even if rAF is throttled
+}
+
+/* ══════════ RESULT CARD (glowed-up, score ring + XP) ══════════ */
+function buildResultCard(won, points, awardedXp, streak, locked){
+  const cfg=won?RESULTS.win:RESULTS.lose;
+  const C=2*Math.PI*42, pct=won?points/MAX:0;
+  const ring=`
+    <div class="score-ring">
+      <svg width="96" height="96" viewBox="0 0 96 96">
+        <circle class="score-ring-bg" cx="48" cy="48" r="42" fill="none" stroke-width="8"/>
+        <circle class="score-ring-fill" cx="48" cy="48" r="42" fill="none" stroke-width="8"
+          stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${C.toFixed(1)}" data-target="${(C*(1-pct)).toFixed(1)}"/>
+      </svg>
+      <div class="score-ring-num"><b>${won?points:'0'}</b><small>z ${MAX}</small></div>
+    </div>`;
+  const side = locked
+    ? `<div class="score-side"><div class="score-xp" style="font-size:19px;">${won?'Vyriešené':'Nevyriešené'}</div>
+         <div class="score-cap">${won?`na ${wrongCount+1}. ${wrongCount+1===1?'pokus':'pokus'}`:'skús ďalší prípad'}</div>
+         ${streak>1?`<div class="score-streak">${icon('srdce')} ${streak} dní v sérii</div>`:''}</div>`
+    : `<div class="score-side"><div class="score-xp"><span id="xp-count">+0</span><small> XP</small></div>
+         <div class="score-cap">${won?`Diagnóza na ${wrongCount+1}. pokus`:'Žiadne body — nabudúce!'}</div>
+         ${won&&streak>1?`<div class="score-streak">${icon('srdce')} ${streak} dní v sérii</div>`:''}</div>`;
+  return `
+    <div class="grade-card" style="background:${cfg.bg};">
+      <div class="grade-label">${cfg.label}</div>
+      <div class="grade-sub">${cfg.sub}</div>
+      <div class="answer-pill">${answer}</div>
+      <div class="score-wrap">${ring}${side}</div>
+    </div>
+    <div class="card" style="animation:fadeUp .5s .1s ease both;">
+      <div class="exp-head">Klinické zhrnutie</div>
+      <div class="exp-body">${puzzle.explain}</div>
+      <button class="share-btn" id="share-btn">Zdieľať výsledok</button>
+    </div>`;
+}
+function animateResult(awardedXp){
+  const fill=document.querySelector('.score-ring-fill');
+  if(fill){ const t=fill.getAttribute('data-target'); setTimeout(()=>{ fill.style.strokeDashoffset=t; }, 60); }
+  if(awardedXp!=null) countUp(document.getElementById('xp-count'), awardedXp, 900);
+}
+
 /* ── init ── */
 function init(){
   applyDark();
+  renderXP();
   loadDay(dateToIdx(startOfDay(new Date())));
 }
 
@@ -1705,12 +1928,14 @@ function loadDay(idx){
   dayIdx=idx; viewDate=idxToDate(idx);
   puzzle=puzzleForIdx(idx); answer=puzzle.answer;
   resetGameState();
+  const themeKey=resolveThemeKey(puzzle);
+  applyTheme(themeKey); updateThemeBanner(themeKey);
   updateDayLabel();
-  renderStreak(); setMascot('idle');
+  renderStreak(); renderXP(); setMascot('idle');
   const r=getResult(viewDate);
   if(r){
     wrongCount=r.guesses?.length||0; pastGuesses=r.guesses||[]; gameEnded=true; gameWon=r.won;
-    renderClues(puzzle.clues.length); renderHistory();
+    renderClues(puzzle.clues.length); renderHistory(); renderPips();
     banner(r.won?'correct':'failed', r.won?`✓ Vyriešené na ${r.tries}. pokus.`:'Tento prípad je za tebou.');
     endGameLocked(r.won);
   } else {
@@ -1725,14 +1950,10 @@ function updateDayLabel(){
 function endGameLocked(won){
   input.disabled=true; document.getElementById('submit-btn').disabled=true;
   const cfg=won?RESULTS.win:RESULTS.lose; document.body.className=(darkMode?'dark ':'')+cfg.cls; setMascot(won?'win':'lose');
-  document.getElementById('results').innerHTML=`
-    <div class="grade-card" style="background:${cfg.bg};">
-      <span class="grade-emoji">${cfg.emoji}</span><div class="grade-label">${cfg.label}</div>
-      <div class="grade-sub">${cfg.sub}</div><div class="answer-pill">${answer}</div></div>
-    <div class="card" style="animation:fadeUp .5s .1s ease both;">
-      <div class="exp-head">Klinické zhrnutie</div><div class="exp-body">${puzzle.explain}</div>
-      <button class="share-btn" id="share-btn">Zdieľať výsledok</button></div>`;
+  const points=won?(MAX-wrongCount):0;
+  document.getElementById('results').innerHTML=buildResultCard(won, points, null, computeStreak(), true);
   document.getElementById('results').style.display='block';
+  animateResult(null);
   if(isToday(viewDate)){ document.getElementById('next-up').classList.add('show'); startCountdown(); }
   document.getElementById('share-btn').addEventListener('click', share);
 }
