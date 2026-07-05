@@ -257,14 +257,8 @@
     @keyframes ambossGlow { 0%,100%{ transform:scale(1); opacity:0.8; } 50%{ transform:scale(1.15); opacity:1; } }
 
     .amboss-promo-inner { position:relative; z-index:1; }
-    .amboss-badge-chip {
-      display:inline-flex; align-items:center; gap:8px; margin-bottom:20px;
-      background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.22);
-      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-      border-radius:999px; padding:6px 15px 6px 10px;
-    }
-    .amboss-badge-chip img { height:16px; width:auto; display:block; }
-    .amboss-badge-chip span { font-size:11px; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; color:rgba(255,255,255,0.88); }
+    .amboss-mark { display:flex; justify-content:center; margin-bottom:22px; }
+    .amboss-mark img { height:30px; width:auto; display:block; }
 
     .amboss-headline { font-size:23px; font-weight:800; line-height:1.28; color:#fff; letter-spacing:-0.01em; margin-bottom:11px; max-width:420px; }
     .amboss-headline em { font-style:normal; color:var(--ab-300); }
@@ -2037,7 +2031,7 @@ function buildAmbossPromo(dx){
   return `
     <div class="amboss-promo" id="amboss-promo">
       <div class="amboss-promo-inner">
-        <div class="amboss-badge-chip"><img src="amboss-logo.png" alt="AMBOSS"><span>Odporúčané</span></div>
+        <div class="amboss-mark"><img src="amboss-logo.png" alt="AMBOSS"></div>
         <div class="amboss-headline">Prečítaj si o diagnóze „<em>${dx}</em>“ na AMBOSS.</div>
         <div class="amboss-quote">„Umožňujeme všetkým lekárom poskytovať tú najlepšiu možnú starostlivosť.“</div>
         <a class="amboss-cta" id="amboss-cta" href="${ambossUrl(dx)}" target="_blank" rel="noopener noreferrer">
