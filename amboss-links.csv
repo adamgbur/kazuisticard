@@ -1,0 +1,31 @@
+case_no,diagnoza_referencia,hladaj_na_amboss_en,amboss_url,overene
+01,Subarachnoidálne krvácanie,subarachnoid hemorrhage,https://www.amboss.com/us/knowledge/subarachnoid-hemorrhage,ano
+02,Infarkt myokardu,myocardial infarction / ST-elevation MI,https://www.amboss.com/us/knowledge/myocardial-infarction,ano
+03,Pľúcna embólia,pulmonary embolism,https://www.amboss.com/us/knowledge/pulmonary-embolism,ano
+04,Diabetická ketoacidóza,diabetic ketoacidosis,,nie
+05,Bakteriálna meningitída,meningitis,https://www.amboss.com/us/knowledge/meningitis,ano
+06,Apendicitída,acute appendicitis,https://www.amboss.com/us/knowledge/acute-appendicitis,ano
+07,Anafylaxia,anaphylaxis,https://www.amboss.com/us/knowledge/anaphylaxis,ano
+08,Disekcia aorty,aortic dissection,https://www.amboss.com/us/knowledge/aortic-dissection,ano
+09,Sepsa,sepsis,,nie
+10,Akútna pankreatitída,acute pancreatitis,https://www.amboss.com/us/knowledge/acute-pancreatitis,ano
+11,Ektopická gravidita,ectopic pregnancy,https://www.amboss.com/us/knowledge/ectopic-pregnancy,ano
+12,Hypertenzná emergencia,hypertensive crisis / emergency,https://www.amboss.com/us/knowledge/hypertensive-crises,ano
+13,Gravesova choroba,Graves disease,,nie
+14,Exacerbácia CHOCHP,COPD exacerbation,,nie
+15,Komunitná pneumónia,community-acquired pneumonia,,nie
+16,Spontánny pneumotorax,pneumothorax,https://www.amboss.com/us/knowledge/pneumothorax,ano
+17,Akútna cholecystitída,acute cholecystitis,,nie
+18,Crohnova choroba,Crohn disease,https://knowledge.manus.amboss.com/us/knowledge/Crohn_disease,ano
+19,Ischemická cievna mozgová príhoda,ischemic stroke,,nie
+20,Parkinsonova choroba,Parkinson disease,,nie
+21,Guillainov-Barrého syndróm,Guillain-Barré syndrome,,nie
+22,Reumatoidná artritída,rheumatoid arthritis,,nie
+23,Systémový lupus erythematosus,systemic lupus erythematosus,,nie
+24,Temporálna arteritída,giant cell arteritis,,nie
+25,Mnohopočetný myelóm,multiple myeloma,,nie
+26,Sideropenická anémia,iron deficiency anemia,,nie
+27,Infekčná mononukleóza,infectious mononucleosis,,nie
+28,Lymská borelióza,Lyme disease,,nie
+29,Pyelonefritída,pyelonephritis,,nie
+30,Feochromocytóm,pheochromocytoma,,nie
