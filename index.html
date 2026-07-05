@@ -249,7 +249,7 @@
     }
     body.dark .amboss-box { background:rgba(30,58,138,0.14) !important; border-color:rgba(59,130,246,0.35) !important; }
     .amboss-head { display:flex; align-items:center; gap:10px; margin-bottom:11px; }
-    .amboss-logo { font-size:12.5px; font-weight:800; letter-spacing:0.14em; color:#fff; background:#2563eb; padding:4px 10px; border-radius:7px; }
+    .amboss-logo { height:20px; width:auto; display:block; background:#fff; padding:3px 8px; border-radius:6px; }
     .amboss-tag { font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#2563eb; }
     body.dark .amboss-tag { color:#93c5fd; }
     .amboss-body { font-size:14px; line-height:1.75; color:#334155; }
@@ -1943,7 +1943,7 @@ function buildResultCard(won, points, awardedXp, streak, locked){
       <div class="score-wrap">${ring}${side}</div>
     </div>
     <div class="amboss-box" style="animation:fadeUp .5s .1s ease both;">
-      <div class="amboss-head"><span class="amboss-logo">AMBOSS</span><span class="amboss-tag">Klinické zhrnutie</span></div>
+      <div class="amboss-head"><img class="amboss-logo" src="amboss-logo.png" alt="AMBOSS"><span class="amboss-tag">Klinické zhrnutie</span></div>
       <div class="amboss-body">${puzzle.explain}</div>
       <a class="amboss-link" href="${ambossUrl(answer)}" target="_blank" rel="noopener noreferrer">
         Prečítať článok na AMBOSS
