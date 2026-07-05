@@ -93,10 +93,6 @@
     .ring-svg { position: absolute; pointer-events: none; }
     #rings-left  { left: -200px; top: 38%; transform: translateY(-50%); animation: ringPulse 6s ease-in-out infinite; }
     #rings-right { right: -200px; top: 62%; transform: translateY(-50%); animation: ringPulse 6s ease-in-out infinite 3s; }
-    .diamond-svg { position: absolute; pointer-events: none; }
-    #dia-bl { bottom: -30px; left:  20px; }
-    #dia-br { bottom: -20px; right: 10px; }
-    #dia-tr { top:    20px;  right: 40px; width: 100px; opacity: 0.5; }
 
     /* ── Main content ── */
     #main-wrap { position: relative; z-index: 1; min-height: 100vh; padding: 40px 20px 120px; }
@@ -137,6 +133,28 @@
       font-size: 13px; font-weight: 600; backdrop-filter: blur(4px);
     }
     .clue.locked .clue-num { background: #cbd5e1; box-shadow: none; }
+    .clue-text { flex:1; min-width:0; }
+
+    /* ── Image clue (radiology / ECG / derm) ── */
+    .clue-img { margin-top:12px; border-radius:12px; overflow:hidden; border:1px solid rgba(226,232,240,0.9); background:#0b1220; }
+    .clue-img.failed { display:none; }                       /* broken image → case still fully playable */
+    .clue-img img { display:block; width:100%; max-height:320px; object-fit:contain; background:#0b1220; cursor:zoom-in; }
+    .clue-img figcaption { padding:8px 12px; font-size:11.5px; color:#94a3b8; line-height:1.5; background:rgba(248,250,252,0.95); display:flex; flex-direction:column; gap:2px; }
+    .clue-img .ci-cap { font-weight:600; color:#475569; }
+    .clue-img .ci-credit a { color:#0d9488; text-decoration:none; }
+    .clue-img .ci-credit a:hover { text-decoration:underline; }
+    body.dark .clue-img { border-color:rgba(255,255,255,0.08); }
+    body.dark .clue-img figcaption { background:rgba(15,23,42,0.7); }
+    body.dark .clue-img .ci-cap { color:#cbd5e1; }
+
+    /* ── Lightbox ── */
+    #lightbox { position:fixed; inset:0; z-index:600; display:none; align-items:center; justify-content:center; background:rgba(2,6,23,0.92); padding:24px; }
+    #lightbox.open { display:flex; }
+    #lightbox img { max-width:96vw; max-height:86vh; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.55); }
+    #lightbox .lb-cap { position:absolute; bottom:18px; left:0; right:0; text-align:center; color:#cbd5e1; font-size:12.5px; padding:0 24px; line-height:1.5; }
+    #lightbox .lb-cap a { color:#5eead4; }
+    #lightbox .lb-close { position:absolute; top:16px; right:20px; width:42px; height:42px; border:none; border-radius:50%; background:rgba(255,255,255,0.14); color:#fff; font-size:24px; cursor:pointer; line-height:1; }
+    #lightbox .lb-close:hover { background:rgba(255,255,255,0.24); }
 
     /* ── Inputs ── */
     .field {
@@ -199,6 +217,7 @@
     }
     .banner.show { display: flex; animation: gradePop 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
     .banner.incorrect { background: rgba(254,226,226,0.85); color: #b91c1c; border: 1.5px solid #fca5a5; }
+    .banner.close     { background: rgba(255,237,213,0.9);  color: #c2410c; border: 1.5px solid #fdba74; }
     .banner.correct   { background: rgba(220,252,231,0.85); color: #15803d; border: 1.5px solid #86efac; }
     .banner.failed    { background: rgba(254,243,199,0.85); color: #92400e; border: 1.5px solid #fcd34d; }
 
@@ -206,7 +225,10 @@
     .ghist { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
     .gchip { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: #94a3b8; font-weight: 500; padding-left: 2px; }
     .gchip .x { flex-shrink:0; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,#fb7185,#e11d48); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
+    .gchip.close .x { background:linear-gradient(135deg,#fdba74,#f97316); }
+    .gchip.close { color:#c2410c; }
     body.dark .gchip { color:#64748b; }
+    body.dark .gchip.close { color:#fdba74; }
 
     /* ── Grade / explanation ── */
     .grade-card { border-radius:24px;padding:30px 26px 26px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.14); }
@@ -218,6 +240,28 @@
 
     .exp-head { font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0d9488;margin-bottom:8px; }
     .exp-body { font-size:14px;line-height:1.75;color:#334155; }
+
+    /* ── AMBOSS reference box ── */
+    .amboss-box {
+      border-radius:20px; padding:20px 22px; margin-top:16px;
+      background:linear-gradient(180deg,#eff6ff,#f8fbff);
+      border:1.5px solid #bfdbfe; box-shadow:0 6px 22px rgba(37,99,235,0.10);
+    }
+    body.dark .amboss-box { background:rgba(30,58,138,0.14) !important; border-color:rgba(59,130,246,0.35) !important; }
+    .amboss-head { display:flex; align-items:center; gap:10px; margin-bottom:11px; }
+    .amboss-logo { font-size:12.5px; font-weight:800; letter-spacing:0.14em; color:#fff; background:#2563eb; padding:4px 10px; border-radius:7px; }
+    .amboss-tag { font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#2563eb; }
+    body.dark .amboss-tag { color:#93c5fd; }
+    .amboss-body { font-size:14px; line-height:1.75; color:#334155; }
+    body.dark .amboss-body { color:#cbd5e1; }
+    .amboss-link {
+      display:inline-flex; align-items:center; gap:7px; margin-top:14px;
+      font-size:13.5px; font-weight:700; color:#fff; background:#2563eb; text-decoration:none;
+      padding:10px 18px; border-radius:11px; box-shadow:0 5px 16px rgba(37,99,235,0.28); transition:filter 0.15s, transform 0.12s;
+    }
+    .amboss-link:hover { filter:brightness(1.06); }
+    .amboss-link:active { transform:scale(0.98); }
+    .amboss-link svg { width:15px; height:15px; }
 
     .share-btn {
       display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:11px 22px;
@@ -419,17 +463,6 @@
     <circle cx="180" cy="180" r="158" stroke="#3ecfb2" stroke-width="0.6" opacity="0.18"/>
     <circle cx="180" cy="180" r="178" stroke="#3ecfb2" stroke-width="0.5" opacity="0.1"/>
   </svg>
-  <svg id="dia-bl" class="diamond-svg" width="160" height="200" viewBox="0 0 160 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="80,4 156,80 80,196 4,80" stroke="#e91680" stroke-width="1.2" opacity="0.35"/>
-    <polygon points="80,40 120,80 80,158 40,80" stroke="#e91680" stroke-width="0.7" opacity="0.18"/>
-  </svg>
-  <svg id="dia-br" class="diamond-svg" width="180" height="220" viewBox="0 0 180 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="90,4 176,90 90,216 4,90" stroke="#3ecfb2" stroke-width="1.2" opacity="0.35"/>
-    <polygon points="90,44 136,90 90,170 44,90" stroke="#3ecfb2" stroke-width="0.7" opacity="0.18"/>
-  </svg>
-  <svg id="dia-tr" class="diamond-svg" width="100" height="125" viewBox="0 0 100 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="50,3 97,50 50,122 3,50" stroke="#e91680" stroke-width="1" opacity="0.25"/>
-  </svg>
 </div>
 
 <!-- ══ MASCOT ══ -->
@@ -535,6 +568,13 @@
   .arch-day.open .arch-badge{ font-size:12px; font-weight:800; color:#e91680; background:rgba(233,22,128,0.12); padding:3px 10px; border-radius:999px; margin:1px 0; }
   .arch-day.today{ box-shadow:0 0 0 2px #e91680; }
 </style>
+<!-- ══ IMAGE LIGHTBOX ══ -->
+<div id="lightbox">
+  <button class="lb-close" id="lb-close" type="button" aria-label="Zavrieť">×</button>
+  <img alt="Klinický obraz">
+  <div class="lb-cap"></div>
+</div>
+
 <div id="archive-modal">
   <div class="arch-sheet">
     <div class="arch-head">
@@ -1159,7 +1199,7 @@ const PUZZLES = [
       { text:"38-ročný muž prichádza pre 4 dni narastajúcu symetrickú slabosť nôh.", specificity:1 },
       { text:"Pred 2 týždňami prekonal hnačkové ochorenie; teraz mravčenie chodidiel a rúk.", specificity:2 },
       { text:"Slabosť sa v priebehu dní šíri smerom nahor a postihuje aj ruky.", specificity:3 },
-      { text:"Vyhasnuté šľachové reflexy na dolných aj horných končatinách; bez poruchovej úrovne čitia (odlíšenie od miechovej lézie).", specificity:4 },
+      { text:"Vyhasnuté šľachové reflexy na dolných aj horných končatinách; bez senzitívnej hladiny (na rozdiel od miechovej lézie).", specificity:4 },
       { text:"Likvor: vysoký proteín pri normálnom počte buniek — albumino-cytologická disociácia.", specificity:5 },
       { text:"EMG: demyelinizačná polyneuropatia; hrozí postih dýchacích svalov.", specificity:6 } ],
     explain:"Guillainov-Barrého syndróm — akútna autoimunitná polyradikuloneuropatia, často po infekcii (Campylobacter jejuni). Nutné sledovať vitálnu kapacitu! Liečba: IVIG alebo plazmaferéza." },
@@ -1231,7 +1271,7 @@ const PUZZLES = [
       { text:"29-ročná žena s dva dni trvajúcou horúčkou, triaškou a bolesťou v boku.", specificity:1 },
       { text:"Predchádzali jej pálenie pri močení a časté urgentné nutkanie na močenie.", specificity:2 },
       { text:"Nauzea a vracanie; teplota 39,0 °C.", specificity:3 },
-      { text:"Výrazná citlivosť v ľavom kostovertebrálnom uhle (tapottement pozitívny).", specificity:4 },
+      { text:"Výrazná citlivosť v ľavom kostovertebrálnom uhle — tapotment pozitívny.", specificity:4 },
       { text:"Moč: leukocyty, nitrity a leukocytové valce; v krvi leukocytóza a zvýšené CRP.", specificity:5 },
       { text:"Kultivácia moču: E. coli > 10⁵ CFU/ml.", specificity:6 } ],
     explain:"Akútna pyelonefritída — vzostupná infekcia obličiek, najčastejšie E. coli. Liečba: empirické ATB (fluorochinolón/cefalosporín); pri komplikáciách hospitalizácia a vylúčenie obštrukcie." },
@@ -1283,7 +1323,7 @@ function categoryMatches(q){
 }
 
 /* ══════════ STATE ══════════ */
-let puzzle, answer, wrongCount = 0, gameEnded = false, selectedDx = null, ddIndex = -1, pastGuesses = [];
+let puzzle, answer, wrongCount = 0, gameEnded = false, selectedDx = null, ddIndex = -1, pastGuesses = [], guessKinds = [];
 let darkMode = localStorage.getItem('dd_dark') === '1';
 const MAX = 6;
 
@@ -1321,6 +1361,22 @@ function matchesAnswer(raw, correctAnswer){
     if(closeEnough(rawCore,vCore)) return true;
   }
   return false;
+}
+/* resolve a free-text guess to a known diagnosis object (exact → alias → fuzzy) */
+function resolveGuess(raw){
+  const rn=norm(raw); if(!rn) return null;
+  for(const d of DIAGNOSES){ if(norm(d.name)===rn) return d; }
+  for(const d of DIAGNOSES){ if((d.aliases||[]).some(a=>norm(a)===rn)) return d; }
+  for(const d of DIAGNOSES){ if(matchesAnswer(raw, d.name)) return d; }
+  return null;
+}
+/* clinically „close": a real diagnosis z rovnakej špecializácie (alebo obe nádory), ale nie tá správna */
+function isCloseGuess(raw){
+  const g=resolveGuess(raw); if(!g) return false;
+  if(norm(g.name)===norm(answer)) return false;
+  const a=DX_BY_NAME.get(answer); if(!a) return false;
+  if(g.categories.includes('nador') && a.categories.includes('nador')) return true;
+  return g.categories[0]===a.categories[0];
 }
 const EPOCH = new Date(2026,5,1);                         // 1. jún 2026 — štart KazuistiCard
 const DAY_MS = 86400000;
@@ -1363,22 +1419,41 @@ function reskinBody(){ const base=darkMode?'dark':''; const bg=document.body.cla
 /* ── clues ── */
 /* poradie odhalenia indícií je dané polom specificity (1=najmenej špecifické), nie poradím v poli */
 function orderedClues(){ return [...puzzle.clues].sort((a,b)=>a.specificity-b.specificity); }
+function escAttr(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* render an optional image attached to a clue (radiology/ECG/derm) with attribution; hides itself if it fails to load */
+function clueImageHTML(im){
+  const cap = im.alt ? `<span class="ci-cap">${im.alt}</span>` : '';
+  const lic = im.license ? ` · <a href="${escAttr(im.licenseUrl||'#')}" target="_blank" rel="noopener noreferrer">${im.license}</a>` : '';
+  const credit = (im.credit||im.license) ? `<span class="ci-credit">${im.credit?`Zdroj: <a href="${escAttr(im.source||'#')}" target="_blank" rel="noopener noreferrer">${im.credit}</a>`:''}${lic}</span>` : '';
+  return `<figure class="clue-img" data-full="${escAttr(im.url)}" data-cap="${escAttr((im.alt||'')+(im.credit?' — '+im.credit:''))}">
+    <img src="${escAttr(im.url)}" alt="${escAttr(im.alt||'Klinický obraz')}" loading="lazy" referrerpolicy="no-referrer"
+      onerror="this.closest('.clue-img').classList.add('failed')">
+    <figcaption>${cap}${credit}</figcaption>
+  </figure>`;
+}
 function renderClues(n){
   const c=document.getElementById('clues'); c.innerHTML='';
   orderedClues().forEach((clue,i)=>{
     const d=document.createElement('div');
-    if(i<n){ d.className='clue'; d.style.animationDelay=(i===n-1&&n>1?'0s':'0s'); d.innerHTML=`<div class="clue-num">${i+1}</div><div>${clue.text}</div>`; }
+    if(i<n){ d.className='clue'; d.style.animationDelay='0s'; d.innerHTML=`<div class="clue-num">${i+1}</div><div class="clue-text">${clue.text}${clue.image?clueImageHTML(clue.image):''}</div>`; }
     else   { d.className='clue locked'; d.innerHTML=`<div class="clue-num">${i+1}</div><div>Indícia sa odhalí po ďalšom pokuse</div>`; }
     c.appendChild(d);
   });
 }
+/* lightbox: click any clue image to view it large */
+function openLightbox(src,cap){ const lb=document.getElementById('lightbox'); lb.querySelector('img').src=src; lb.querySelector('.lb-cap').textContent=cap||''; lb.classList.add('open'); }
+function closeLightbox(){ const lb=document.getElementById('lightbox'); lb.classList.remove('open'); lb.querySelector('img').src=''; }
+document.getElementById('clues').addEventListener('click', e=>{ const fig=e.target.closest('.clue-img'); if(fig && !fig.classList.contains('failed')) openLightbox(fig.dataset.full, fig.dataset.cap); });
+document.getElementById('lb-close').addEventListener('click', closeLightbox);
+document.getElementById('lightbox').addEventListener('click', e=>{ if(e.target.id==='lightbox') closeLightbox(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLightbox(); });
 function updateCounter(){ document.getElementById('counter').textContent = gameEnded?'' : `Pokus ${wrongCount+1} z ${MAX}`; renderPips(); }
 
 /* ── banner ── */
 function banner(type,txt){ const b=document.getElementById('banner'); b.className='banner show '+type; b.textContent=txt; }
 
 /* ── history ── */
-function renderHistory(){ const e=document.getElementById('ghist'); e.innerHTML=pastGuesses.map(g=>`<div class="gchip"><span class="x">✕</span>${g}</div>`).join(''); }
+function renderHistory(){ const e=document.getElementById('ghist'); e.innerHTML=pastGuesses.map((g,i)=>{ const close=guessKinds[i]==='close'; return `<div class="gchip${close?' close':''}"><span class="x">${close?'≈':'✕'}</span>${g}</div>`; }).join(''); }
 
 /* ── autocomplete ── */
 function filterDx(q){
@@ -1493,9 +1568,11 @@ function submit(){
     banner('correct',`✓ Správne! Diagnóza na ${wrongCount+1}. pokus.`);
     endGame(true);
   } else {
-    pastGuesses.push(raw); wrongCount++; renderHistory();
-    if(wrongCount>=MAX){ gameEnded=true; renderClues(puzzle.clues.length); banner('failed','Nevadí — pozri správnu odpoveď nižšie.'); endGame(false); }
-    else { banner('incorrect','✕ Nesprávne! Odhalili sme ďalšiu indíciu.'); renderClues(wrongCount+1); updateCounter(); setMascot('think'); }
+    const close=isCloseGuess(raw);
+    pastGuesses.push(raw); guessKinds.push(close?'close':'wrong'); wrongCount++; renderHistory();
+    if(wrongCount>=MAX){ gameEnded=true; renderClues(puzzle.clues.length); banner('failed','Škoda — správnu diagnózu nájdeš nižšie.'); endGame(false); }
+    else if(close){ banner('close','Blízko! Rovnaká oblasť, ale iná diagnóza — skús príbuznú.'); renderClues(wrongCount+1); updateCounter(); setMascot('think'); }
+    else { banner('incorrect','Nesprávne — odhalili sme ďalšiu indíciu.'); renderClues(wrongCount+1); updateCounter(); setMascot('think'); }
   }
   input.value=''; selectedDx=null; closeDropdown();
 }
@@ -1835,6 +1912,9 @@ function countUp(el,to,ms){
   setTimeout(()=>{ el.textContent='+'+to; }, ms+80);   // guarantees final value even if rAF is throttled
 }
 
+/* správny tvar slova „deň" podľa slovenského skloňovania */
+function dayWord(n){ return n===1 ? 'deň' : (n>=2 && n<=4) ? 'dni' : 'dní'; }
+
 /* ══════════ RESULT CARD (glowed-up, score ring + XP) ══════════ */
 function buildResultCard(won, points, awardedXp, streak, locked){
   const cfg=won?RESULTS.win:RESULTS.lose;
@@ -1851,10 +1931,10 @@ function buildResultCard(won, points, awardedXp, streak, locked){
   const side = locked
     ? `<div class="score-side"><div class="score-xp" style="font-size:19px;">${won?'Vyriešené':'Nevyriešené'}</div>
          <div class="score-cap">${won?`na ${wrongCount+1}. ${wrongCount+1===1?'pokus':'pokus'}`:'skús ďalší prípad'}</div>
-         ${streak>1?`<div class="score-streak">${icon('srdce')} ${streak} dní v sérii</div>`:''}</div>`
+         ${streak>1?`<div class="score-streak">${icon('srdce')} ${streak} ${dayWord(streak)} streak</div>`:''}</div>`
     : `<div class="score-side"><div class="score-xp"><span id="xp-count">+0</span><small> XP</small></div>
          <div class="score-cap">${won?`Diagnóza na ${wrongCount+1}. pokus`:'Žiadne body — nabudúce!'}</div>
-         ${won&&streak>1?`<div class="score-streak">${icon('srdce')} ${streak} dní v sérii</div>`:''}</div>`;
+         ${won&&streak>1?`<div class="score-streak">${icon('srdce')} ${streak} ${dayWord(streak)} streak</div>`:''}</div>`;
   return `
     <div class="grade-card" style="background:${cfg.bg};">
       <div class="grade-label">${cfg.label}</div>
@@ -1862,11 +1942,22 @@ function buildResultCard(won, points, awardedXp, streak, locked){
       <div class="answer-pill">${answer}</div>
       <div class="score-wrap">${ring}${side}</div>
     </div>
-    <div class="card" style="animation:fadeUp .5s .1s ease both;">
-      <div class="exp-head">Klinické zhrnutie</div>
-      <div class="exp-body">${puzzle.explain}</div>
+    <div class="amboss-box" style="animation:fadeUp .5s .1s ease both;">
+      <div class="amboss-head"><span class="amboss-logo">AMBOSS</span><span class="amboss-tag">Klinické zhrnutie</span></div>
+      <div class="amboss-body">${puzzle.explain}</div>
+      <a class="amboss-link" href="${ambossUrl(answer)}" target="_blank" rel="noopener noreferrer">
+        Prečítať článok na AMBOSS
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+    <div style="text-align:center;">
       <button class="share-btn" id="share-btn">Zdieľať výsledok</button>
     </div>`;
+}
+/* AMBOSS deep link: exact per-case article URL if provided, else a guaranteed-resolving search that lands on the article */
+function ambossUrl(dx){
+  if(puzzle && puzzle.amboss) return puzzle.amboss;
+  return 'https://www.google.com/search?q='+encodeURIComponent(dx+' AMBOSS knowledge');
 }
 function animateResult(awardedXp){
   const fill=document.querySelector('.score-ring-fill');
@@ -1913,7 +2004,7 @@ document.getElementById('archive-btn').addEventListener('click', openArchive);
 document.getElementById('arch-close').addEventListener('click', closeArchive);
 document.getElementById('archive-modal').addEventListener('click', e=>{ if(e.target.id==='archive-modal') closeArchive(); });
 function resetGameState(){
-  wrongCount=0; pastGuesses=[]; gameEnded=false; gameWon=false; selectedDx=null;
+  wrongCount=0; pastGuesses=[]; guessKinds=[]; gameEnded=false; gameWon=false; selectedDx=null;
   input.disabled=false; document.getElementById('submit-btn').disabled=false;
   input.value='';
   document.getElementById('results').style.display='none';
