@@ -241,27 +241,94 @@
     .exp-head { font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0d9488;margin-bottom:8px; }
     .exp-body { font-size:14px;line-height:1.75;color:#334155; }
 
-    /* ── AMBOSS reference box ── */
-    .amboss-box {
-      border-radius:20px; padding:20px 22px; margin-top:16px;
-      background:linear-gradient(180deg,#eff6ff,#f8fbff);
-      border:1.5px solid #bfdbfe; box-shadow:0 6px 22px rgba(37,99,235,0.10);
+    /* ── AMBOSS promo (brand teal sampled directly from the AMBOSS logo asset) ── */
+    :root { --ab-900:#043e40; --ab-700:#0a6e71; --ab-600:#0c8a8f; --ab-500:#009ba4; --ab-300:#7fe3dd; }
+    .amboss-promo {
+      position:relative; overflow:hidden; border-radius:26px; margin-top:16px;
+      padding:30px 26px 28px;
+      background:linear-gradient(160deg,var(--ab-900) 0%,var(--ab-700) 45%,var(--ab-500) 100%);
+      box-shadow:0 22px 50px rgba(4,62,64,0.32);
     }
-    body.dark .amboss-box { background:rgba(30,58,138,0.14) !important; border-color:rgba(59,130,246,0.35) !important; }
-    .amboss-head { display:flex; align-items:center; gap:10px; margin-bottom:11px; }
-    .amboss-logo { height:20px; width:auto; display:block; background:#fff; padding:3px 8px; border-radius:6px; }
-    .amboss-tag { font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#2563eb; }
-    body.dark .amboss-tag { color:#93c5fd; }
-    .amboss-body { font-size:14px; line-height:1.75; color:#334155; }
-    body.dark .amboss-body { color:#cbd5e1; }
-    .amboss-link {
-      display:inline-flex; align-items:center; gap:7px; margin-top:14px;
-      font-size:13.5px; font-weight:700; color:#fff; background:#2563eb; text-decoration:none;
-      padding:10px 18px; border-radius:11px; box-shadow:0 5px 16px rgba(37,99,235,0.28); transition:filter 0.15s, transform 0.12s;
+    .amboss-promo::before, .amboss-promo::after {
+      content:''; position:absolute; border-radius:50%; pointer-events:none; filter:blur(38px);
     }
-    .amboss-link:hover { filter:brightness(1.06); }
-    .amboss-link:active { transform:scale(0.98); }
-    .amboss-link svg { width:15px; height:15px; }
+    .amboss-promo::before { width:260px; height:260px; background:rgba(127,227,221,0.35); top:-110px; right:-90px; animation:ambossGlow 7s ease-in-out infinite; }
+    .amboss-promo::after  { width:220px; height:220px; background:rgba(255,255,255,0.10); bottom:-100px; left:-80px; animation:ambossGlow 8s ease-in-out infinite 1.5s; }
+    @keyframes ambossGlow { 0%,100%{ transform:scale(1); opacity:0.8; } 50%{ transform:scale(1.15); opacity:1; } }
+
+    .amboss-promo-inner { position:relative; z-index:1; }
+    .amboss-badge-chip {
+      display:inline-flex; align-items:center; gap:8px; margin-bottom:20px;
+      background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.22);
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      border-radius:999px; padding:6px 15px 6px 10px;
+    }
+    .amboss-badge-chip img { height:16px; width:auto; display:block; }
+    .amboss-badge-chip span { font-size:11px; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; color:rgba(255,255,255,0.88); }
+
+    .amboss-headline { font-size:23px; font-weight:800; line-height:1.28; color:#fff; letter-spacing:-0.01em; margin-bottom:11px; max-width:420px; }
+    .amboss-headline em { font-style:normal; color:var(--ab-300); }
+    .amboss-quote { font-size:13.5px; line-height:1.65; color:rgba(255,255,255,0.74); font-style:italic; margin-bottom:24px; max-width:380px; }
+
+    .amboss-cta {
+      position:relative; overflow:hidden; isolation:isolate;
+      display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+      background:#fff; color:var(--ab-700); font-weight:800; font-size:14.5px;
+      padding:13px 20px 13px 14px; border-radius:15px;
+      box-shadow:0 12px 28px rgba(0,0,0,0.24); transition:transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease;
+    }
+    .amboss-cta img { height:19px; width:auto; display:block; position:relative; z-index:1; }
+    .amboss-cta span { position:relative; z-index:1; }
+    .amboss-cta .arrow { position:relative; z-index:1; transition:transform 0.22s ease; }
+    .amboss-cta:hover { transform:translateY(-3px) scale(1.03); box-shadow:0 18px 36px rgba(0,0,0,0.3); }
+    .amboss-cta:hover .arrow { transform:translateX(4px); }
+    .amboss-cta:active { transform:translateY(-1px) scale(0.98); }
+    .amboss-cta::after {
+      content:''; position:absolute; z-index:0; top:0; left:-60%; width:45%; height:100%;
+      background:linear-gradient(115deg, transparent, rgba(10,110,113,0.14), transparent);
+      transform:skewX(-18deg); animation:ambossShimmer 3.4s ease-in-out infinite;
+    }
+    @keyframes ambossShimmer { 0%,15%{ left:-60%; } 65%,100%{ left:130%; } }
+
+    /* decorative phone mockup (stylized homage, not a literal screenshot) */
+    .amboss-phone-wrap { display:flex; justify-content:center; margin-top:28px; perspective:1000px; }
+    .amboss-phone {
+      width:184px; background:#0b1113; border-radius:28px; padding:9px;
+      box-shadow:0 30px 60px rgba(0,0,0,0.45);
+      animation:ambossFloat 4.6s ease-in-out infinite; transition:transform 0.2s ease; will-change:transform;
+    }
+    @keyframes ambossFloat { 0%,100%{ transform:translateY(0) rotate(-1.4deg); } 50%{ transform:translateY(-10px) rotate(1.4deg); } }
+    .amboss-notch { width:46px; height:5px; background:#000; border-radius:4px; margin:0 auto 7px; }
+    .amboss-screen { background:#eef7f6; border-radius:19px; overflow:hidden; }
+    .amboss-screen-head { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); padding:12px 12px 15px; }
+    .amboss-screen-head img { height:13px; width:auto; display:block; filter:brightness(0) invert(1); opacity:0.95; }
+    .amboss-search { margin-top:10px; background:#fff; border-radius:10px; padding:7px 10px; display:flex; align-items:center; gap:6px; }
+    .amboss-search svg { width:11px; height:11px; stroke:#94a3b8; flex-shrink:0; }
+    .amboss-search span { font-size:9px; color:#94a3b8; font-weight:600; }
+    .amboss-screen-body { padding:11px 11px 14px; display:flex; flex-direction:column; gap:7px; }
+    .amboss-row { background:#fff; border-radius:9px; padding:8px; display:flex; align-items:center; gap:8px; box-shadow:0 1px 5px rgba(0,0,0,0.06); }
+    .amboss-row .dot { width:15px; height:15px; border-radius:5px; background:linear-gradient(135deg,var(--ab-500),var(--ab-700)); flex-shrink:0; }
+    .amboss-row .lines { flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
+    .amboss-row .line { height:5px; border-radius:3px; background:#dde9e8; }
+    .amboss-row .line.short { width:52%; }
+    .amboss-row .real-label { font-size:9.5px; font-weight:700; color:#0f3f40; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    /* stat tiles below the hero card */
+    .amboss-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:11px; margin-top:14px; }
+    .amboss-stat {
+      background:rgba(0,155,164,0.055); border:1px solid rgba(0,155,164,0.16);
+      border-radius:17px; padding:16px 15px; opacity:0; animation:ambossPop 0.5s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    .amboss-stat b { display:block; font-size:21px; font-weight:800; color:var(--ab-700); letter-spacing:-0.01em; }
+    .amboss-stat p { font-size:12px; line-height:1.5; color:#475569; margin-top:4px; font-weight:500; }
+    .amboss-stat.highlight { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); border-color:transparent; }
+    .amboss-stat.highlight b, .amboss-stat.highlight p { color:#fff; }
+    @keyframes ambossPop { from{ opacity:0; transform:translateY(10px) scale(0.96); } to{ opacity:1; transform:translateY(0) scale(1); } }
+    body.dark .amboss-stat { background:rgba(0,155,164,0.10); border-color:rgba(0,155,164,0.28); }
+    body.dark .amboss-stat b { color:var(--ab-300); }
+    body.dark .amboss-stat p { color:#94a3b8; }
+    body.dark .amboss-stat.highlight { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); border-color:transparent; }
+    body.dark .amboss-stat.highlight b, body.dark .amboss-stat.highlight p { color:#fff; }
 
     .share-btn {
       display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:11px 22px;
@@ -1942,14 +2009,7 @@ function buildResultCard(won, points, awardedXp, streak, locked){
       <div class="answer-pill">${answer}</div>
       <div class="score-wrap">${ring}${side}</div>
     </div>
-    <div class="amboss-box" style="animation:fadeUp .5s .1s ease both;">
-      <div class="amboss-head"><img class="amboss-logo" src="amboss-logo.png" alt="AMBOSS"><span class="amboss-tag">Klinické zhrnutie</span></div>
-      <div class="amboss-body">${puzzle.explain}</div>
-      <a class="amboss-link" href="${ambossUrl(answer)}" target="_blank" rel="noopener noreferrer">
-        Prečítať článok na AMBOSS
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-      </a>
-    </div>
+    ${buildAmbossPromo(answer)}
     <div style="text-align:center;">
       <button class="share-btn" id="share-btn">Zdieľať výsledok</button>
     </div>`;
@@ -1959,10 +2019,83 @@ function ambossUrl(dx){
   if(puzzle && puzzle.amboss) return puzzle.amboss;
   return 'https://www.google.com/search?q='+encodeURIComponent(dx+' AMBOSS knowledge');
 }
+const AMBOSS_STATS = [
+  { to:1500,    suffix:'+', label:'klinických a predklinických článkov' },
+  { to:20000,   suffix:'+', label:'vyhľadateľných tém, recenzovaných tímom 50+ lekárov' },
+  { to:22000,   suffix:'+', label:'otázok pripravených na svetové skúšky' },
+  { to:2000000, suffix:'+', label:'používateľov vo viac ako 180 krajinách' },
+  { to:null,               label:'Zadarmo pre študentov JLF UK, UK BA a UPJŠ KE', highlight:true },
+];
+/* pure-CSS/HTML stylised homage to the AMBOSS app UI (not a literal screenshot) + animated CTA + stat tiles.
+   No AI-written diagnosis summary here on purpose — this box only promotes the real AMBOSS article. */
+function buildAmbossPromo(dx){
+  const statsHtml = AMBOSS_STATS.map((s,i)=>`
+    <div class="amboss-stat${s.highlight?' highlight':''}" style="animation-delay:${0.55+i*0.08}s">
+      ${s.to!=null ? `<b data-count-to="${s.to}" data-suffix="${s.suffix}">0</b>` : ''}
+      <p>${s.label}</p>
+    </div>`).join('');
+  return `
+    <div class="amboss-promo" id="amboss-promo">
+      <div class="amboss-promo-inner">
+        <div class="amboss-badge-chip"><img src="amboss-logo.png" alt="AMBOSS"><span>Odporúčané</span></div>
+        <div class="amboss-headline">Prečítaj si o diagnóze „<em>${dx}</em>“ na AMBOSS.</div>
+        <div class="amboss-quote">„Umožňujeme všetkým lekárom poskytovať tú najlepšiu možnú starostlivosť.“</div>
+        <a class="amboss-cta" id="amboss-cta" href="${ambossUrl(dx)}" target="_blank" rel="noopener noreferrer">
+          <img src="amboss-logo.png" alt=""><span>Klikni sem!</span>
+          <svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+        <div class="amboss-phone-wrap">
+          <div class="amboss-phone" id="amboss-phone">
+            <div class="amboss-notch"></div>
+            <div class="amboss-screen">
+              <div class="amboss-screen-head">
+                <img src="amboss-logo.png" alt="AMBOSS">
+                <div class="amboss-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <span>Hľadaj diagnózy…</span>
+                </div>
+              </div>
+              <div class="amboss-screen-body">
+                <div class="amboss-row"><div class="dot"></div><div class="lines"><div class="line"></div><div class="line short"></div></div></div>
+                <div class="amboss-row"><div class="dot"></div><div class="real-label">${dx}</div></div>
+                <div class="amboss-row"><div class="dot"></div><div class="lines"><div class="line"></div><div class="line short"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="amboss-stats">${statsHtml}</div>`;
+}
+/* mouse-tilt on the phone + count-up on the stat numbers, called once after the promo is in the DOM */
+function initAmbossPromo(){
+  const promo=document.getElementById('amboss-promo'); if(!promo) return;
+  const phone=document.getElementById('amboss-phone');
+  if(phone){
+    promo.addEventListener('mousemove', e=>{
+      const r=promo.getBoundingClientRect();
+      const px=(e.clientX-r.left)/r.width-0.5, py=(e.clientY-r.top)/r.height-0.5;
+      phone.style.transform=`rotateY(${px*14}deg) rotateX(${-py*14}deg)`;
+    });
+    promo.addEventListener('mouseleave', ()=>{ phone.style.transform=''; });
+  }
+  const statsWrap = promo.nextElementSibling; /* .amboss-stats renders as a sibling, not a child, of #amboss-promo */
+  (statsWrap||document).querySelectorAll('.amboss-stat b[data-count-to]').forEach(b=>{
+    const to=parseInt(b.dataset.countTo,10), suffix=b.dataset.suffix||'';
+    countUpFormatted(b, to, 900, suffix);
+  });
+}
+function countUpFormatted(el,to,ms,suffix){
+  if(!el) return; const start=performance.now();
+  const fmt=n=>Math.round(n).toLocaleString('sk-SK');
+  (function tick(now){ const p=Math.min(1,(now-start)/ms); el.textContent=fmt(p*to)+suffix; if(p<1) requestAnimationFrame(tick); })(start);
+  setTimeout(()=>{ el.textContent=fmt(to)+suffix; }, ms+80);
+}
 function animateResult(awardedXp){
   const fill=document.querySelector('.score-ring-fill');
   if(fill){ const t=fill.getAttribute('data-target'); setTimeout(()=>{ fill.style.strokeDashoffset=t; }, 60); }
   if(awardedXp!=null) countUp(document.getElementById('xp-count'), awardedXp, 900);
+  initAmbossPromo();
 }
 
 /* ── init ── */
