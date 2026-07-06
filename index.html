@@ -147,9 +147,6 @@
     .clue-img .ci-cap { font-weight:600; color:#475569; }
     .clue-img .ci-credit a { color:#0d9488; text-decoration:none; }
     .clue-img .ci-credit a:hover { text-decoration:underline; }
-    body.dark .clue-img { border-color:rgba(255,255,255,0.08); }
-    body.dark .clue-img figcaption { background:rgba(15,23,42,0.7); }
-    body.dark .clue-img .ci-cap { color:#cbd5e1; }
 
     /* ── Lightbox ── */
     #lightbox { position:fixed; inset:0; z-index:600; display:none; align-items:center; justify-content:center; background:rgba(2,6,23,0.92); padding:24px; }
@@ -197,9 +194,6 @@
     .dd-group-header .chev { font-size:11px; transition: transform 0.15s ease; }
     .dd-group-header.expanded .chev { transform: rotate(90deg); }
     .dd-group-sub { padding: 7px 16px 4px; font-size: 11.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em; background: rgba(148,163,184,0.05); }
-    body.dark .dd-group-header { background: rgba(255,255,255,0.04) !important; color:#94a3b8 !important; border-color:#1e2d40 !important; }
-    body.dark .dd-group-header:hover { color:#5eead4 !important; }
-    body.dark .dd-group-sub { background: rgba(255,255,255,0.02) !important; color:#64748b !important; }
 
     .btn-primary {
       flex-shrink: 0; border: none; border-radius: 14px; padding: 14px 26px;
@@ -231,8 +225,6 @@
     .gchip .x { flex-shrink:0; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,#fb7185,#e11d48); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
     .gchip.close .x { background:linear-gradient(135deg,#fdba74,#f97316); }
     .gchip.close { color:#c2410c; }
-    body.dark .gchip { color:#64748b; }
-    body.dark .gchip.close { color:#fdba74; }
 
     /* ── Grade / explanation ── */
     .grade-card { border-radius:24px;padding:30px 26px 26px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.14); }
@@ -261,8 +253,8 @@
     @keyframes ambossGlow { 0%,100%{ transform:scale(1); opacity:0.8; } 50%{ transform:scale(1.15); opacity:1; } }
 
     .amboss-promo-inner { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; }
-    .amboss-mark { margin-bottom:20px; }
-    .amboss-mark img { height:52px; width:auto; display:block; filter:brightness(0) invert(1); }
+    .amboss-mark { margin-bottom:22px; }
+    .amboss-mark img { height:72px; width:auto; display:block; filter:brightness(0) invert(1); }
 
     .amboss-headline { font-size:23px; font-weight:800; line-height:1.28; color:#fff; letter-spacing:-0.01em; margin-bottom:11px; max-width:420px; }
     .amboss-headline em { font-style:normal; color:var(--ab-300); }
@@ -299,7 +291,7 @@
     .amboss-mac-cam { position:absolute; top:3px; left:50%; transform:translateX(-50%); width:5px; height:5px; border-radius:50%; background:#1a2224; }
     .amboss-screen { width:100%; height:100%; background:#eef7f6; border-radius:5px; overflow:hidden; }
     .amboss-screen-head { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); padding:10px 14px; display:flex; align-items:center; gap:12px; }
-    .amboss-screen-head img { height:15px; width:auto; display:block; filter:brightness(0) invert(1); opacity:0.95; flex-shrink:0; }
+    .amboss-screen-head img { height:19px; width:auto; display:block; filter:brightness(0) invert(1); opacity:0.95; flex-shrink:0; }
     .amboss-search { flex:1; background:#fff; border-radius:8px; padding:6px 11px; display:flex; align-items:center; gap:7px; }
     .amboss-search svg { width:12px; height:12px; stroke:#94a3b8; flex-shrink:0; }
     .amboss-search span { font-size:10px; color:#94a3b8; font-weight:600; }
@@ -338,11 +330,6 @@
     .amboss-stat.highlight b, .amboss-stat.highlight p { color:#fff; }
     .amboss-stat.highlight p { margin-top:2px; }
     @keyframes ambossPop { from{ opacity:0; transform:translateY(10px) scale(0.96); } to{ opacity:1; transform:translateY(0) scale(1); } }
-    body.dark .amboss-stat { background:rgba(0,155,164,0.12); border-color:rgba(0,155,164,0.3); }
-    body.dark .amboss-stat b { color:var(--ab-300); }
-    body.dark .amboss-stat p { color:#94a3b8; }
-    body.dark .amboss-stat.highlight { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); border-color:transparent; }
-    body.dark .amboss-stat.highlight b, body.dark .amboss-stat.highlight p { color:#fff; }
     @media (max-width:480px){ .amboss-stats{ grid-template-columns:1fr; } .amboss-stat.highlight{ grid-column:1; } }
 
     .share-btn {
@@ -355,7 +342,6 @@
     .next-up { text-align:center; margin-top:18px; font-size:13px; color:#94a3b8; font-weight:500; display:none; }
     .next-up.show { display:block; }
     #cdtimer { font-weight:800; color:var(--accent); font-size:16px; }
-    body.dark #cdtimer { color:var(--accent2); }
 
     /* ── Streak dots ── */
     .streak-wrap { display:flex; justify-content:center; align-items:center; gap:7px; margin-bottom:18px; min-height:30px; }
@@ -364,33 +350,8 @@
 
     /* ── Counter ── */
     .counter { text-align:center; font-size:12px; color:#94a3b8; font-weight:700; letter-spacing:0.04em; margin-bottom:16px; }
-    body.dark .counter { color:#475569; }
 
     /* ── Dark mode ── */
-    body.dark { background:#0d1117 !important; color:#e2e8f0; }
-    body.dark.bg-good { background:#042f2e !important; }
-    body.dark.bg-bad  { background:#1e0717 !important; }
-    body.dark .card { background:rgba(22,33,50,0.95) !important; border-color:rgba(255,255,255,0.07) !important; }
-    body.dark .clue { background:rgba(22,33,50,0.92) !important; border-color:rgba(255,255,255,0.07) !important; border-left-color:#3ecfb2 !important; color:#cbd5e1 !important; }
-    body.dark .clue.locked { background:rgba(30,41,59,0.5) !important; border-left-color:#334155 !important; color:#475569 !important; }
-    body.dark .field { background:rgba(15,23,42,0.9) !important; border-color:#1e2d40 !important; color:#e2e8f0 !important; }
-    body.dark .field:focus { border-color:#e91680 !important; background:#0f172a !important; }
-    body.dark .dropdown { background:rgba(15,23,42,0.98) !important; border-color:#1e2d40 !important; }
-    body.dark .dd-item { color:#cbd5e1 !important; border-color:#1e2d40 !important; }
-    body.dark .dd-item:hover, body.dark .dd-item.active { background:rgba(62,207,178,0.16) !important; color:#5eead4 !important; }
-    body.dark .sublabel { color:#334155 !important; }
-    body.dark h1 { color:#f1f5f9; }
-    body.dark header p, body.dark .change-link { color:#475569 !important; }
-    body.dark .exp-body { color:#94a3b8 !important; }
-
-    #dark-btn {
-      position:fixed; top:16px; right:16px; z-index:200;
-      background:rgba(255,255,255,0.14); border:1.5px solid rgba(255,255,255,0.2);
-      border-radius:12px; padding:7px 14px; font-size:13px; font-weight:600;
-      cursor:pointer; font-family:inherit; color:inherit;
-      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:all 0.2s;
-    }
-    body.dark #dark-btn { background:rgba(15,23,42,0.7); border-color:rgba(255,255,255,0.1); }
 
     /* ── Logo hover ── */
     .logo-wrap { display:inline-flex; align-items:center; cursor:default; }
@@ -398,9 +359,17 @@
     .logo-slide { overflow:hidden; max-width:0; opacity:0; white-space:nowrap; display:flex; align-items:center; transition: max-width 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.35s ease; }
     .logo-wrap:hover .logo-slide { max-width:320px; opacity:1; }
     .logo-slide span { font-size:28px; font-weight:800; letter-spacing:-0.03em; color:#111827; padding-left:14px; }
-    body.dark .logo-slide span { color:#f1f5f9 !important; }
     .logo-wrap-light .logo-slide span { color:rgba(255,255,255,0.92) !important; }
     @keyframes logoWelcome { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-6px) scale(1.05)} }
+
+    /* ── Mladí Lekári × AMBOSS collab lockup ── */
+    .collab { display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap; }
+    .collab img { display:block; width:auto; }
+    .collab .collab-ml { height:26px; }
+    .collab .collab-ab { height:46px; }
+    .collab .collab-x { font-size:22px; font-weight:300; color:#cbd5e1; line-height:1; }
+    .collab-light .collab-ml, .collab-light .collab-ab { filter:brightness(0) invert(1); }
+    .collab-light .collab-x { color:rgba(255,255,255,0.65); }
 
     /* ── Mascot ── */
 
@@ -418,7 +387,6 @@
       box-shadow:0 2px 12px var(--theme-soft);
     }
     .theme-banner svg { width:15px; height:15px; stroke:var(--theme-color); flex-shrink:0; }
-    body.dark .theme-banner { color:var(--theme-color); background:rgba(255,255,255,0.05); }
     .day-label { font-size:12.5px; font-weight:700; color:var(--theme-color); background:var(--theme-soft); padding:6px 14px; border-radius:999px; }
     @keyframes bannerPop { 0%{transform:scale(0.85);opacity:0;} 60%{transform:scale(1.05);} 100%{transform:scale(1);opacity:1;} }
     .theme-banner.pop { animation:bannerPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
@@ -434,7 +402,6 @@
     .pip.current::after { content:''; position:absolute; inset:0; border-radius:999px; border:2px solid var(--accent); animation:pipPulse 1.3s ease-in-out infinite; }
     .pip.win { background:linear-gradient(90deg,var(--mint),var(--mint2)); box-shadow:0 1px 6px rgba(62,207,178,0.4); }
     @keyframes pipPulse { 0%,100%{opacity:0.55;} 50%{opacity:1;} }
-    body.dark .pip { background:rgba(148,163,184,0.15); }
 
     /* ── XP / level chip (header) ── */
     .xp-chip {
@@ -444,7 +411,6 @@
       backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 4px 16px rgba(15,23,42,0.08);
       font-family:inherit; cursor:default; user-select:none;
     }
-    body.dark .xp-chip { background:rgba(15,23,42,0.7); border-color:rgba(255,255,255,0.08); }
     .xp-lvl { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
       font-size:12px; font-weight:800; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-strong)); box-shadow:0 2px 8px var(--accent-glow); }
     .xp-meta { display:flex; flex-direction:column; gap:3px; }
@@ -471,18 +437,17 @@
 <body>
 
 <!-- ══ WELCOME SCREEN ══ -->
-<div id="welcome-screen" style="position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;background:linear-gradient(150deg,#c91270 0%,#e91680 40%,#f472b6 100%);overflow:hidden;">
+<div id="welcome-screen" style="position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;background:linear-gradient(150deg,#e91680 0%,#a51f6f 42%,#0c8a8f 100%);overflow:hidden;">
   <div style="position:absolute;top:-150px;right:-150px;width:440px;height:440px;border-radius:50%;background:#3ecfb2;pointer-events:none;"></div>
   <div style="position:absolute;bottom:-100px;left:-130px;width:380px;height:380px;border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none;"></div>
   <div style="position:absolute;top:22%;right:7%;width:130px;height:130px;border-radius:50%;border:3px solid #3ecfb2;pointer-events:none;"></div>
   <div style="position:absolute;bottom:18%;left:5%;width:90px;height:90px;border-radius:50%;border:1px solid rgba(255,255,255,0.13);pointer-events:none;"></div>
 
   <div style="position:relative;max-width:520px;width:100%;text-align:center;z-index:1;">
-    <div style="display:flex;justify-content:center;margin-bottom:28px;animation:fadeUp 0.5s ease both;">
-      <div class="logo-wrap logo-wrap-light">
-        <img src="logo.png.png" alt="mladí lekári" style="height:84px;filter:brightness(0) invert(1);opacity:0.92;animation:logoWelcome 4s ease-in-out infinite;">
-        <div class="logo-slide"><span>mladí lekári</span></div>
-      </div>
+    <div class="collab collab-light" style="margin-bottom:30px;animation:fadeUp 0.5s ease both;">
+      <img class="collab-ml" src="logo2.png.png" alt="Mladí Lekári">
+      <span class="collab-x">×</span>
+      <img class="collab-ab" src="amboss-logo.png" alt="AMBOSS">
     </div>
 
     <h1 style="font-size:60px;font-weight:800;color:white;line-height:0.98;margin-bottom:18px;letter-spacing:-0.04em;animation:fadeUp 0.5s 0.08s ease both;">KazuistiCard</h1>
@@ -511,9 +476,6 @@
     </button>
   </div>
 </div>
-
-<!-- ══ DARK MODE TOGGLE ══ -->
-<button id="dark-btn">Tmavý</button>
 
 <!-- ══ XP / LEVEL CHIP ══ -->
 <div class="xp-chip" id="xp-chip" style="display:none;" title="Tvoje skúsenostné body">
@@ -554,18 +516,17 @@
 <div id="main-wrap">
   <div style="max-width:660px; margin:0 auto;">
 
-    <!-- Logo -->
-    <div style="display:flex; justify-content:center; margin-bottom:14px;">
-      <div class="logo-wrap">
-        <img src="logo.png.png" alt="mladí lekári logo">
-        <div class="logo-slide"><span>mladí lekári</span></div>
-      </div>
+    <!-- Collab logo lockup -->
+    <div class="collab" style="margin-bottom:16px;">
+      <img class="collab-ml" src="logo2.png.png" alt="Mladí Lekári">
+      <span class="collab-x">×</span>
+      <img class="collab-ab" src="amboss-logo.png" alt="AMBOSS">
     </div>
 
     <!-- Header -->
     <header style="text-align:center; margin-bottom:22px;">
       <h1 style="font-size:38px; font-weight:800; line-height:1.1; margin-bottom:10px; letter-spacing:-0.025em;">
-        <span style="background:linear-gradient(120deg,#e91680 0%,#f472b6 50%,#3ecfb2 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">KazuistiCard</span>
+        <span style="background:linear-gradient(120deg,#e91680 0%,#f472b6 45%,#009ba4 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">KazuistiCard</span>
       </h1>
       <p style="color:#64748b; font-size:14.5px; max-width:470px; margin:0 auto; line-height:1.65;">
         Prečítaj si klinický prípad a napíš svoju diagnózu. Po každom pokuse sa odhalí nová indícia.
@@ -629,18 +590,15 @@
   .arch-sheet{ background:#fff; width:100%; max-width:660px; max-height:82vh; border-radius:24px 24px 0 0;
     padding:22px 22px 30px; box-shadow:0 -10px 40px rgba(15,23,42,0.25); transform:translateY(20px); transition:transform .24s cubic-bezier(.34,1.3,.64,1); display:flex; flex-direction:column; }
   #archive-modal.open .arch-sheet{ transform:translateY(0); }
-  body.dark .arch-sheet{ background:#0f1b2e; color:#e2e8f0; }
   .arch-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
   .arch-title{ font-size:19px; font-weight:800; letter-spacing:-0.02em; }
   .arch-close{ width:34px; height:34px; border:none; border-radius:50%; background:rgba(148,163,184,0.16); color:#475569; font-size:19px; cursor:pointer; line-height:1; font-family:inherit; }
-  body.dark .arch-close{ color:#cbd5e1; background:rgba(255,255,255,0.08); }
   .arch-sub{ font-size:12.5px; color:#94a3b8; margin-bottom:16px; }
   .arch-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:9px; overflow-y:auto; padding:2px; }
   .arch-day{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:11px 6px; border-radius:15px; border:1.5px solid transparent;
     cursor:pointer; font-family:inherit; background:rgba(148,163,184,0.10); transition:transform .12s ease, box-shadow .12s ease; }
   .arch-day:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(15,23,42,0.10); }
   .arch-day .arch-date{ font-size:13px; font-weight:800; color:#334155; }
-  body.dark .arch-day .arch-date{ color:#e2e8f0; }
   .arch-day .arch-badge{ font-size:17px; font-weight:800; line-height:1.1; }
   .arch-day .arch-state{ font-size:10px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.03em; }
   .arch-day.won{ background:rgba(62,207,178,0.14); border-color:rgba(62,207,178,0.4); }
@@ -1406,7 +1364,6 @@ function categoryMatches(q){
 
 /* ══════════ STATE ══════════ */
 let puzzle, answer, wrongCount = 0, gameEnded = false, selectedDx = null, ddIndex = -1, pastGuesses = [], guessKinds = [];
-let darkMode = localStorage.getItem('dd_dark') === '1';
 const MAX = 6;
 
 const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
@@ -1492,11 +1449,6 @@ document.getElementById('welcome-btn').addEventListener('click', ()=>{
   ws.style.transition='opacity 0.4s ease'; ws.style.opacity='0';
   setTimeout(()=>{ ws.style.display='none'; document.getElementById('main-app').style.display='block'; init(); }, 380);
 });
-
-/* ── dark mode ── */
-function applyDark(){ const b=document.getElementById('dark-btn'); document.body.classList.toggle('dark',darkMode); b.textContent=darkMode?'Svetlý':'Tmavý'; }
-document.getElementById('dark-btn').addEventListener('click', ()=>{ darkMode=!darkMode; localStorage.setItem('dd_dark',darkMode?'1':'0'); applyDark(); reskinBody(); });
-function reskinBody(){ const base=darkMode?'dark':''; const bg=document.body.className.includes('bg-good')?'bg-good':document.body.className.includes('bg-bad')?'bg-bad':''; document.body.className=(base+' '+bg).trim(); }
 
 /* ── clues ── */
 /* poradie odhalenia indícií je dané polom specificity (1=najmenej špecifické), nie poradím v poli */
@@ -1671,7 +1623,7 @@ function endGame(won){
   const awardedXp=won?awardXP(points):0;
   renderStreak();
   const cfg = won?RESULTS.win:RESULTS.lose;
-  document.body.className=(darkMode?'dark ':'')+cfg.cls;
+  document.body.className=cfg.cls;
   setMascot(won?'win':'lose');
 
   document.getElementById('results').innerHTML = buildResultCard(won, points, awardedXp, computeStreak(), false);
@@ -1708,157 +1660,137 @@ function renderStreak(){
   wrap.innerHTML=html;
 }
 
-/* ── share image ── */
+/* ── share image (Instagram-story 1080×1920, Mladí Lekári × AMBOSS) ── */
 function share(){
   const won=gameWon;
   const tries=won?wrongCount+1:wrongCount;
-  const score=won?`${tries}/${MAX}`:`X/${MAX}`;
-  const diagnosisName=answer||'';
+  const scoreStr=won?`${tries}/${MAX}`:`X/${MAX}`;
+  const points=won?(MAX-wrongCount):0;
+  const dx=answer||'';
+  const xp=loadXP(), lvl=levelFromXp(xp);
+  const dateStr=fmtDate(viewDate);
 
-  const W=480, H=700;
-  const dpr=window.devicePixelRatio||2;
+  const W=1080, H=1920;
   const canvas=document.createElement('canvas');
-  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.width=W; canvas.height=H;
   const ctx=canvas.getContext('2d');
-  ctx.scale(dpr,dpr);
 
-  function drawCard(logoImg){
-    // randomise theme: pink or teal
-    const usePink=Math.random()<0.5;
-    const themes={
-      pink:{ g0:'#c91270', g1:'#e91680', g2:'#f472b6', blob:'rgba(62,207,178,0.40)', accent:'#e91680' },
-      teal:{ g0:'#0e7b68', g1:'#1a9e86', g2:'#3ecfb2', blob:'rgba(233,22,128,0.35)',  accent:'#3ecfb2' }
-    };
-    const theme=usePink?themes.pink:themes.teal;
-    const squareCorrectLabel=usePink?'#e91680':'#1a9e86';
+  const loadImg=src=>new Promise(res=>{ const im=new Image(); im.crossOrigin='anonymous'; im.onload=()=>res(im); im.onerror=()=>res(null); im.src=src; });
+  function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+  /* recolour a transparent logo to a solid white silhouette (canvas can't apply CSS filters) */
+  function whiteSil(img,h){ if(!img) return null; const w=h*(img.naturalWidth/img.naturalHeight); const off=document.createElement('canvas'); off.width=Math.ceil(w); off.height=Math.ceil(h); const o=off.getContext('2d'); o.drawImage(img,0,0,w,h); o.globalCompositeOperation='source-in'; o.fillStyle='#fff'; o.fillRect(0,0,off.width,off.height); return {canvas:off,w,h}; }
 
-    // background gradient
+  Promise.all([loadImg('logo2.png.png'), loadImg('amboss-logo.png'), (document.fonts&&document.fonts.ready)||Promise.resolve()]).then(([mlImg,abImg])=>{
+    draw(mlImg,abImg); exportCanvas();
+  });
+
+  function draw(mlImg,abImg){
+    // background gradient (pink → AMBOSS teal) + soft glows
     const bg=ctx.createLinearGradient(0,0,W,H);
-    bg.addColorStop(0,theme.g0); bg.addColorStop(0.5,theme.g1); bg.addColorStop(1,theme.g2);
+    bg.addColorStop(0,'#e91680'); bg.addColorStop(0.45,'#a51f6f'); bg.addColorStop(1,'#0a6e71');
     ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    const glow=(x,y,r,c)=>{ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,c); g.addColorStop(1,'transparent'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill(); };
+    glow(W-30,110,540,'rgba(62,207,178,0.34)');
+    glow(70,H-120,520,'rgba(233,22,128,0.30)');
+    glow(W/2,H/2,760,'rgba(255,255,255,0.05)');
 
-    // decorative blobs
-    const radBlob=(x,y,r,c)=>{ const g=ctx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,c); g.addColorStop(1,'transparent'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); };
-    radBlob(W+60, -60, 220, theme.blob);
-    radBlob(-60, H+40, 200,'rgba(255,255,255,0.07)');
-
-    // ── KazuistiCard label ──
     ctx.textAlign='center';
-    ctx.font=`700 15px "Plus Jakarta Sans", system-ui, sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.60)';
-    ctx.fillText('KazuistiCard', W/2, 54);
 
-    // ── date (of the played case) ──
-    const dateStr=fmtDate(viewDate);
-    ctx.font=`500 13px "Plus Jakarta Sans", system-ui, sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.42)';
-    ctx.fillText(dateStr, W/2, 74);
+    // ── collab logos (top, white silhouettes) ──
+    const ml=whiteSil(mlImg,44), ab=whiteSil(abImg,72);
+    const xW=42, gap=36, midY=175;
+    let total=(ml?ml.w:0)+gap+xW+gap+(ab?ab.w:0);
+    let cx0=(W-total)/2;
+    if(ml){ ctx.drawImage(ml.canvas,cx0,midY-ml.h/2); cx0+=ml.w; }
+    cx0+=gap; ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='300 44px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('×',cx0+xW/2,midY+16); cx0+=xW+gap;
+    if(ab){ ctx.drawImage(ab.canvas,cx0,midY-ab.h/2); }
 
-    // ── score ──
-    ctx.font=`800 56px "Plus Jakarta Sans", system-ui, sans-serif`;
-    ctx.fillStyle='white';
-    ctx.fillText(score, W/2, 152);
+    // ── label + date ──
+    ctx.fillStyle='rgba(255,255,255,0.62)'; ctx.font='800 27px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('DENNÁ KAZUISTIKA', W/2, 330);
+    ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='500 27px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText(dateStr, W/2, 372);
 
-    ctx.font=`500 14px "Plus Jakarta Sans", system-ui, sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.65)';
-    ctx.fillText(won?'Diagnóza správne stanovená':'Tentoraz to nevyšlo', W/2, 176);
+    // ── score ring ──
+    const cx=W/2, cy=630, R=180;
+    ctx.lineWidth=26; ctx.lineCap='round';
+    ctx.strokeStyle='rgba(255,255,255,0.16)';
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+    const pct=won?points/MAX:0;
+    if(pct>0){ ctx.strokeStyle='#fff'; ctx.beginPath(); ctx.arc(cx,cy,R,-Math.PI/2,-Math.PI/2+pct*Math.PI*2); ctx.stroke(); }
+    ctx.fillStyle='#fff'; ctx.font='800 118px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText(scoreStr, cx, cy+42);
+
+    // ── subtitle ──
+    ctx.fillStyle='#fff'; ctx.font='700 36px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText(won?`Diagnóza na ${tries}. pokus`:'Tentoraz to nevyšlo', W/2, 908);
 
     // ── attempt squares ──
-    const SQ=52, GAP=10;
-    const gridW=MAX*(SQ+GAP)-GAP;
-    const gridX=(W-gridW)/2, gridY=204;
-
+    const SQ=74, GAP=16, gw=MAX*(SQ+GAP)-GAP, sx=(W-gw)/2, sy=956;
     for(let i=0;i<MAX;i++){
-      const x=gridX+i*(SQ+GAP), y=gridY, r=12;
-      let fill, label, labelColor;
-      if(i<wrongCount){
-        fill='rgba(0,0,0,0.22)'; label=String(i+1); labelColor='rgba(255,255,255,0.70)';
-      } else if(i===wrongCount&&won){
-        fill='rgba(255,255,255,0.95)'; label=String(i+1); labelColor=squareCorrectLabel;
-      } else {
-        fill='rgba(255,255,255,0.12)'; label=''; labelColor='transparent';
-      }
-      ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+SQ-r,y); ctx.quadraticCurveTo(x+SQ,y,x+SQ,y+r);
-      ctx.lineTo(x+SQ,y+SQ-r); ctx.quadraticCurveTo(x+SQ,y+SQ,x+SQ-r,y+SQ);
-      ctx.lineTo(x+r,y+SQ); ctx.quadraticCurveTo(x,y+SQ,x,y+SQ-r);
-      ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-      ctx.fillStyle=fill; ctx.fill();
-      if(label){
-        ctx.font=`700 16px "Plus Jakarta Sans", system-ui, sans-serif`;
-        ctx.fillStyle=labelColor; ctx.textAlign='center';
-        ctx.fillText(label, x+SQ/2, y+SQ/2+6);
-      }
+      const x=sx+i*(SQ+GAP);
+      let fill;
+      if(i<wrongCount) fill='rgba(0,0,0,0.22)';
+      else if(i===wrongCount&&won) fill='#ffffff';
+      else fill='rgba(255,255,255,0.14)';
+      roundRect(x,sy,SQ,SQ,18); ctx.fillStyle=fill; ctx.fill();
+      if(i<wrongCount){ ctx.fillStyle='rgba(255,255,255,0.72)'; ctx.font='800 30px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.fillText(String(i+1),x+SQ/2,sy+SQ/2+11); }
+      else if(i===wrongCount&&won){ ctx.fillStyle='#0a6e71'; ctx.font='800 30px "Plus Jakarta Sans",system-ui,sans-serif'; ctx.fillText(String(i+1),x+SQ/2,sy+SQ/2+11); }
     }
 
     // ── diagnosis pill ──
-    const pillY=gridY+SQ+28;
-    const pillH=48, pillR=pillH/2;
-    ctx.font=`700 17px "Plus Jakarta Sans", system-ui, sans-serif`;
-    const pillW=Math.min(W-64, ctx.measureText(diagnosisName).width+60);
-    const pillX=(W-pillW)/2;
-    ctx.beginPath(); ctx.moveTo(pillX+pillR,pillY); ctx.lineTo(pillX+pillW-pillR,pillY);
-    ctx.quadraticCurveTo(pillX+pillW,pillY,pillX+pillW,pillY+pillR);
-    ctx.lineTo(pillX+pillW,pillY+pillH-pillR); ctx.quadraticCurveTo(pillX+pillW,pillY+pillH,pillX+pillW-pillR,pillY+pillH);
-    ctx.lineTo(pillX+pillR,pillY+pillH); ctx.quadraticCurveTo(pillX,pillY+pillH,pillX,pillY+pillH-pillR);
-    ctx.lineTo(pillX,pillY+pillR); ctx.quadraticCurveTo(pillX,pillY,pillX+pillR,pillY); ctx.closePath();
-    ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.5; ctx.stroke();
-    ctx.fillStyle='white'; ctx.textAlign='center';
-    ctx.fillText(diagnosisName, W/2, pillY+pillH/2+6);
+    ctx.font='800 40px "Plus Jakarta Sans",system-ui,sans-serif';
+    const pw=Math.min(W-120, ctx.measureText(dx).width+90), ph=90, px=(W-pw)/2, py=1086;
+    roundRect(px,py,pw,ph,ph/2); ctx.fillStyle='rgba(255,255,255,0.16)'; ctx.fill();
+    ctx.lineWidth=2; ctx.strokeStyle='rgba(255,255,255,0.34)'; ctx.stroke();
+    ctx.fillStyle='#fff'; ctx.fillText(dx, W/2, py+ph/2+14);
 
-    // ── divider ──
-    const divY=pillY+pillH+34;
-    ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(60,divY); ctx.lineTo(W-60,divY); ctx.stroke();
+    // ── level badge ──
+    ctx.font='800 30px "Plus Jakarta Sans",system-ui,sans-serif';
+    const lvlText=`LEVEL ${lvl} · ${xp} XP`;
+    const lw=ctx.measureText(lvlText).width+64, lh=64, lx=(W-lw)/2, ly=1216;
+    roundRect(lx,ly,lw,lh,lh/2); ctx.fillStyle='rgba(255,255,255,0.94)'; ctx.fill();
+    ctx.fillStyle='#a51f6f'; ctx.fillText(lvlText, W/2, ly+lh/2+11);
+
+    // ── AMBOSS perk strip ──
+    const stX=90, stY=1336, stW=W-180, stH=196;
+    roundRect(stX,stY,stW,stH,36); ctx.fillStyle='rgba(4,40,42,0.30)'; ctx.fill();
+    ctx.lineWidth=1.5; ctx.strokeStyle='rgba(255,255,255,0.16)'; ctx.stroke();
+    const abs=whiteSil(abImg,88);
+    if(abs){ ctx.drawImage(abs.canvas, stX+46, stY+(stH-88)/2); }
+    ctx.textAlign='left';
+    const tx=stX+46+(abs?abs.w:0)+46;
+    ctx.fillStyle='#fff'; ctx.font='800 31px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('Odomkni AMBOSS ako študent', tx, stY+74);
+    ctx.fillStyle='rgba(255,255,255,0.74)'; ctx.font='500 25px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('1 500+ článkov · 22 000+ otázok', tx, stY+114);
+    ctx.fillText('zadarmo pre študentov LF', tx, stY+148);
+    ctx.textAlign='center';
 
     // ── CTA ──
-    ctx.font=`700 20px "Plus Jakarta Sans", system-ui, sans-serif`;
-    ctx.fillStyle='white'; ctx.textAlign='center';
-    ctx.fillText('Zvládneš to aj ty?', W/2, divY+34);
-
-    ctx.font=`500 14px "Plus Jakarta Sans", system-ui, sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.65)';
-    ctx.fillText('Skús dennú kazuistiku na', W/2, divY+56);
-
-    ctx.font=`700 15px "Plus Jakarta Sans", system-ui, sans-serif`;
-    ctx.fillStyle='rgba(255,255,255,0.90)';
-    ctx.fillText('mladilekari.sk', W/2, divY+76);
-
-    // ── logo at bottom ──
-    const logoY=divY+110;
-    if(logoImg){
-      const lh=46, lw=lh*(logoImg.naturalWidth/logoImg.naturalHeight||2.5);
-      ctx.globalAlpha=0.85;
-      ctx.drawImage(logoImg,(W-lw)/2,logoY,lw,lh);
-      ctx.globalAlpha=1;
-    } else {
-      ctx.font=`700 20px "Plus Jakarta Sans", system-ui, sans-serif`;
-      ctx.fillStyle='rgba(255,255,255,0.80)'; ctx.textAlign='center';
-      ctx.fillText('mladí lekári', W/2, logoY+26);
-    }
+    ctx.fillStyle='#fff'; ctx.font='800 52px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('Zvládneš to aj ty?', W/2, 1690);
+    ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='500 30px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('Hraj dennú kazuistiku na', W/2, 1740);
+    ctx.fillStyle='#fff'; ctx.font='800 40px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('mladilekari.sk', W/2, 1792);
   }
 
   function exportCanvas(){
-    canvas.toBlob(b=>{
-      const file=new File([b],'kazuisticard.png',{type:'image/png'});
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        navigator.share({files:[file],title:'KazuistiCard'}).catch(()=>{});
-      } else {
-        const a=document.createElement('a');
-        a.href=URL.createObjectURL(b);
-        a.download='kazuisticard.png';
-        a.click();
-        toast('Obrázok uložený');
-      }
-    },'image/png');
+    try {
+      canvas.toBlob(b=>{
+        if(!b){ toast('Nepodarilo sa vytvoriť obrázok'); return; }
+        const file=new File([b],'kazuisticard.png',{type:'image/png'});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          navigator.share({files:[file],title:'KazuistiCard'}).catch(()=>{});
+        } else {
+          const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='kazuisticard.png'; a.click();
+          toast('Obrázok uložený');
+        }
+      },'image/png');
+    } catch(e){ toast('Zdieľanie nie je dostupné'); }
   }
-
-  // load logo then draw; fall back immediately on error
-  const logo=new Image();
-  logo.crossOrigin='anonymous';
-  logo.onload=()=>{ drawCard(logo); exportCanvas(); };
-  logo.onerror=()=>{ drawCard(null); exportCanvas(); };
-  logo.src='logo.png.png';
 }
 function toast(m){ const t=document.createElement('div'); t.textContent=m;
   t.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 22px;border-radius:999px;font-weight:700;font-size:13px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.25);';
@@ -2049,7 +1981,7 @@ const AMBOSS_STATS = [
   { to:20000,   suffix:'+', label:'vyhľadateľných tém, recenzovaných tímom 50+ lekárov', icon:'grid' },
   { to:22000,   suffix:'+', label:'otázok pripravených na svetové skúšky', icon:'check' },
   { to:2000000, suffix:'+', label:'používateľov vo viac ako 180 krajinách', icon:'users' },
-  { to:null,               label:'Zadarmo pre študentov JLF UK, UK BA a UPJŠ KE', icon:'gift', highlight:true },
+  { to:null,               label:'Zadarmo pre študentov LF UK Bratislava, JLF UK Martin, LF UPJŠ Košice', icon:'gift', highlight:true },
 ];
 /* pure-CSS/HTML stylised homage to the AMBOSS app UI (not a literal screenshot) + animated CTA + stat tiles.
    No AI-written diagnosis summary here on purpose — this box only promotes the real AMBOSS article. */
@@ -2059,7 +1991,7 @@ function buildAmbossPromo(dx){
       ${ambossIcon(s.icon)}
       <div>
         ${s.to!=null ? `<b data-count-to="${s.to}" data-suffix="${s.suffix}">0</b>` : `<b>Zadarmo</b>`}
-        <p>${s.highlight ? 'pre študentov JLF UK, UK BA a UPJŠ KE' : s.label}</p>
+        <p>${s.highlight ? 'pre študentov LF UK Bratislava, JLF UK Martin, LF UPJŠ Košice' : s.label}</p>
       </div>
     </div>`).join('');
   return `
@@ -2067,7 +1999,7 @@ function buildAmbossPromo(dx){
       <div class="amboss-promo-inner">
         <div class="amboss-mark"><img src="amboss-mark.png" alt="AMBOSS"></div>
         <div class="amboss-headline">Prečítaj si o diagnóze „<em>${dx}</em>“ na AMBOSS.</div>
-        <div class="amboss-quote">„Umožňujeme lekárom poskytovať tú najlepšiu možnú starostlivosť.“</div>
+        <div class="amboss-quote">Umožňujeme lekárom poskytovať tú najlepšiu možnú starostlivosť.</div>
         <a class="amboss-cta" id="amboss-cta" href="${ambossUrl(dx)}" target="_blank" rel="noopener noreferrer">
           <span>Klikni sem!</span>
           <svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
@@ -2137,7 +2069,6 @@ function animateResult(awardedXp){
 
 /* ── init ── */
 function init(){
-  applyDark();
   renderXP();
   loadDay(dateToIdx(startOfDay(new Date())));
 }
@@ -2182,7 +2113,7 @@ function resetGameState(){
   document.getElementById('next-up').classList.remove('show');
   document.getElementById('banner').className='banner';
   document.getElementById('ghist').innerHTML='';
-  document.body.className=darkMode?'dark':'';
+  document.body.className='';
 }
 /* loadDay(idx): load the case for a given day. Unplayed → fresh game (answer hidden until solved). Played → locked result. */
 function loadDay(idx){
@@ -2210,7 +2141,7 @@ function updateDayLabel(){
 }
 function endGameLocked(won){
   input.disabled=true; document.getElementById('submit-btn').disabled=true;
-  const cfg=won?RESULTS.win:RESULTS.lose; document.body.className=(darkMode?'dark ':'')+cfg.cls; setMascot(won?'win':'lose');
+  const cfg=won?RESULTS.win:RESULTS.lose; document.body.className=cfg.cls; setMascot(won?'win':'lose');
   const points=won?(MAX-wrongCount):0;
   document.getElementById('results').innerHTML=buildResultCard(won, points, null, computeStreak(), true);
   document.getElementById('results').style.display='block';
