@@ -11,7 +11,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { min-height: 100vh; overflow-x: hidden; }
 
-    /* ── Theme tokens (set live per case-specialty by applyTheme) ── */
+    /* ── Brand tokens (fixed Mladí Lekári pink/mint — never overridden by the specialty theme) ── */
     :root {
       --accent:       #e91680;
       --accent2:      #f472b6;
@@ -20,10 +20,14 @@
       --accent-glow:  rgba(233,22,128,0.30);
       --mint:  #3ecfb2;
       --mint2: #27b99d;
+      /* specialty-theme tokens — consumed ONLY by .theme-banner / .day-label, set live by applyTheme() */
+      --theme-color:  #e91680;
+      --theme-strong: #c91270;
+      --theme-soft:   rgba(233,22,128,0.09);
+      --theme-glow:   rgba(233,22,128,0.30);
     }
     /* smooth morph when the theme changes between cases */
-    .btn-primary, .field, .clue, .clue-num, .theme-banner, .pip, #cdtimer,
-    .day-label, .xp-fill, .score-ring-fill { transition: background 0.55s ease, border-color 0.55s ease, color 0.55s ease, box-shadow 0.55s ease, stroke 0.55s ease; }
+    .theme-banner, .day-label { transition: background 0.55s ease, border-color 0.55s ease, color 0.55s ease, box-shadow 0.55s ease; }
 
     body {
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -222,8 +226,8 @@
     .banner.failed    { background: rgba(254,243,199,0.85); color: #92400e; border: 1.5px solid #fcd34d; }
 
     /* ── Wrong-guess chips ── */
-    .ghist { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
-    .gchip { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: #94a3b8; font-weight: 500; padding-left: 2px; }
+    .ghist { margin-bottom: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .gchip { display: flex; align-items: center; justify-content: center; gap: 9px; font-size: 13.5px; color: #94a3b8; font-weight: 500; }
     .gchip .x { flex-shrink:0; width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,#fb7185,#e11d48); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
     .gchip.close .x { background:linear-gradient(135deg,#fdba74,#f97316); }
     .gchip.close { color:#c2410c; }
@@ -256,9 +260,9 @@
     .amboss-promo::after  { width:220px; height:220px; background:rgba(255,255,255,0.10); bottom:-100px; left:-80px; animation:ambossGlow 8s ease-in-out infinite 1.5s; }
     @keyframes ambossGlow { 0%,100%{ transform:scale(1); opacity:0.8; } 50%{ transform:scale(1.15); opacity:1; } }
 
-    .amboss-promo-inner { position:relative; z-index:1; }
-    .amboss-mark { display:flex; justify-content:center; margin-bottom:22px; }
-    .amboss-mark img { height:30px; width:auto; display:block; }
+    .amboss-promo-inner { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; }
+    .amboss-mark { margin-bottom:20px; }
+    .amboss-mark img { height:52px; width:auto; display:block; filter:brightness(0) invert(1); }
 
     .amboss-headline { font-size:23px; font-weight:800; line-height:1.28; color:#fff; letter-spacing:-0.01em; margin-bottom:11px; max-width:420px; }
     .amboss-headline em { font-style:normal; color:var(--ab-300); }
@@ -266,12 +270,11 @@
 
     .amboss-cta {
       position:relative; overflow:hidden; isolation:isolate;
-      display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+      display:inline-flex; align-items:center; gap:9px; text-decoration:none;
       background:#fff; color:var(--ab-700); font-weight:800; font-size:14.5px;
-      padding:13px 20px 13px 14px; border-radius:15px;
+      padding:13px 22px; border-radius:15px;
       box-shadow:0 12px 28px rgba(0,0,0,0.24); transition:transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease;
     }
-    .amboss-cta img { height:19px; width:auto; display:block; position:relative; z-index:1; }
     .amboss-cta span { position:relative; z-index:1; }
     .amboss-cta .arrow { position:relative; z-index:1; transition:transform 0.22s ease; }
     .amboss-cta:hover { transform:translateY(-3px) scale(1.03); box-shadow:0 18px 36px rgba(0,0,0,0.3); }
@@ -284,45 +287,63 @@
     }
     @keyframes ambossShimmer { 0%,15%{ left:-60%; } 65%,100%{ left:130%; } }
 
-    /* decorative phone mockup (stylized homage, not a literal screenshot) */
-    .amboss-phone-wrap { display:flex; justify-content:center; margin-top:28px; perspective:1000px; }
-    .amboss-phone {
-      width:184px; background:#0b1113; border-radius:28px; padding:9px;
-      box-shadow:0 30px 60px rgba(0,0,0,0.45);
-      animation:ambossFloat 4.6s ease-in-out infinite; transition:transform 0.2s ease; will-change:transform;
+    /* decorative MacBook mockup (stylized homage, not a literal screenshot) — closed until scrolled into view, then opens */
+    .amboss-mac-wrap { margin-top:32px; perspective:1600px; }
+    .amboss-mac { position:relative; width:300px; }
+    .amboss-mac-lid {
+      position:relative; width:100%; aspect-ratio:16/10.4; background:#0b1113; border-radius:10px 10px 3px 3px;
+      padding:8px 8px 0; transform-origin:bottom center; transform:rotateX(-96deg); transition:transform 1.1s cubic-bezier(.22,1,.36,1);
+      box-shadow:0 25px 55px rgba(0,0,0,0.4);
     }
-    @keyframes ambossFloat { 0%,100%{ transform:translateY(0) rotate(-1.4deg); } 50%{ transform:translateY(-10px) rotate(1.4deg); } }
-    .amboss-notch { width:46px; height:5px; background:#000; border-radius:4px; margin:0 auto 7px; }
-    .amboss-screen { background:#eef7f6; border-radius:19px; overflow:hidden; }
-    .amboss-screen-head { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); padding:12px 12px 15px; }
-    .amboss-screen-head img { height:13px; width:auto; display:block; filter:brightness(0) invert(1); opacity:0.95; }
-    .amboss-search { margin-top:10px; background:#fff; border-radius:10px; padding:7px 10px; display:flex; align-items:center; gap:6px; }
-    .amboss-search svg { width:11px; height:11px; stroke:#94a3b8; flex-shrink:0; }
-    .amboss-search span { font-size:9px; color:#94a3b8; font-weight:600; }
-    .amboss-screen-body { padding:11px 11px 14px; display:flex; flex-direction:column; gap:7px; }
-    .amboss-row { background:#fff; border-radius:9px; padding:8px; display:flex; align-items:center; gap:8px; box-shadow:0 1px 5px rgba(0,0,0,0.06); }
-    .amboss-row .dot { width:15px; height:15px; border-radius:5px; background:linear-gradient(135deg,var(--ab-500),var(--ab-700)); flex-shrink:0; }
-    .amboss-row .lines { flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
-    .amboss-row .line { height:5px; border-radius:3px; background:#dde9e8; }
+    .amboss-mac.open .amboss-mac-lid { transform:rotateX(-6deg); }
+    .amboss-mac-cam { position:absolute; top:3px; left:50%; transform:translateX(-50%); width:5px; height:5px; border-radius:50%; background:#1a2224; }
+    .amboss-screen { width:100%; height:100%; background:#eef7f6; border-radius:5px; overflow:hidden; }
+    .amboss-screen-head { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); padding:10px 14px; display:flex; align-items:center; gap:12px; }
+    .amboss-screen-head img { height:15px; width:auto; display:block; filter:brightness(0) invert(1); opacity:0.95; flex-shrink:0; }
+    .amboss-search { flex:1; background:#fff; border-radius:8px; padding:6px 11px; display:flex; align-items:center; gap:7px; }
+    .amboss-search svg { width:12px; height:12px; stroke:#94a3b8; flex-shrink:0; }
+    .amboss-search span { font-size:10px; color:#94a3b8; font-weight:600; }
+    .amboss-screen-body { padding:10px 14px 12px; display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .amboss-row { background:#fff; border-radius:8px; padding:7px 8px; display:flex; align-items:center; gap:7px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+    .amboss-row .dot { width:13px; height:13px; border-radius:4px; background:linear-gradient(135deg,var(--ab-500),var(--ab-700)); flex-shrink:0; }
+    .amboss-row .lines { flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+    .amboss-row .line { height:4px; border-radius:2px; background:#dde9e8; }
     .amboss-row .line.short { width:52%; }
-    .amboss-row .real-label { font-size:9.5px; font-weight:700; color:#0f3f40; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-    /* stat tiles below the hero card */
-    .amboss-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:11px; margin-top:14px; }
-    .amboss-stat {
-      background:rgba(0,155,164,0.055); border:1px solid rgba(0,155,164,0.16);
-      border-radius:17px; padding:16px 15px; opacity:0; animation:ambossPop 0.5s cubic-bezier(.34,1.56,.64,1) forwards;
+    .amboss-row.highlight-row { background:linear-gradient(135deg,var(--ab-500),var(--ab-700)); grid-column:1 / -1; }
+    .amboss-row .real-label { font-size:9.5px; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .amboss-mac-base {
+      width:112%; margin-left:-6%; height:12px; background:linear-gradient(180deg,#1c2426,#0b1113);
+      border-radius:0 0 10px 10px; position:relative;
+      box-shadow:0 10px 18px rgba(0,0,0,0.35);
     }
-    .amboss-stat b { display:block; font-size:21px; font-weight:800; color:var(--ab-700); letter-spacing:-0.01em; }
-    .amboss-stat p { font-size:12px; line-height:1.5; color:#475569; margin-top:4px; font-weight:500; }
-    .amboss-stat.highlight { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); border-color:transparent; }
+    .amboss-mac-base::after { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:16%; height:5px; background:#050707; border-radius:0 0 6px 6px; }
+
+    /* stat tiles below the hero card — 2x2 grid + a full-width highlight banner, generous spacing */
+    .amboss-stats { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
+    .amboss-stat {
+      background:rgba(0,155,164,0.06); border:1.5px solid rgba(0,155,164,0.18);
+      border-radius:19px; padding:20px 18px; opacity:0; animation:ambossPop 0.5s cubic-bezier(.34,1.56,.64,1) forwards;
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .amboss-stat:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,155,164,0.16); }
+    .amboss-stat svg { width:22px; height:22px; stroke:var(--ab-500); margin-bottom:10px; }
+    .amboss-stat b { display:block; font-size:26px; font-weight:800; color:var(--ab-700); letter-spacing:-0.01em; }
+    .amboss-stat p { font-size:12.5px; line-height:1.5; color:#475569; margin-top:5px; font-weight:600; }
+    .amboss-stat.highlight {
+      grid-column:1 / -1; background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); border-color:transparent;
+      display:flex; align-items:center; gap:14px; text-align:left;
+    }
+    .amboss-stat.highlight svg { margin-bottom:0; stroke:#fff; flex-shrink:0; }
+    .amboss-stat.highlight b { font-size:16px; }
     .amboss-stat.highlight b, .amboss-stat.highlight p { color:#fff; }
+    .amboss-stat.highlight p { margin-top:2px; }
     @keyframes ambossPop { from{ opacity:0; transform:translateY(10px) scale(0.96); } to{ opacity:1; transform:translateY(0) scale(1); } }
-    body.dark .amboss-stat { background:rgba(0,155,164,0.10); border-color:rgba(0,155,164,0.28); }
+    body.dark .amboss-stat { background:rgba(0,155,164,0.12); border-color:rgba(0,155,164,0.3); }
     body.dark .amboss-stat b { color:var(--ab-300); }
     body.dark .amboss-stat p { color:#94a3b8; }
     body.dark .amboss-stat.highlight { background:linear-gradient(135deg,var(--ab-700),var(--ab-500)); border-color:transparent; }
     body.dark .amboss-stat.highlight b, body.dark .amboss-stat.highlight p { color:#fff; }
+    @media (max-width:480px){ .amboss-stats{ grid-template-columns:1fr; } .amboss-stat.highlight{ grid-column:1; } }
 
     .share-btn {
       display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:11px 22px;
@@ -392,13 +413,13 @@
     .theme-banner {
       display:inline-flex; align-items:center; gap:8px;
       font-size:12.5px; font-weight:800; letter-spacing:0.01em;
-      color:var(--accent-strong); background:var(--accent-soft);
-      border:1.5px solid var(--accent-glow); padding:7px 16px; border-radius:999px;
-      box-shadow:0 2px 12px var(--accent-soft);
+      color:var(--theme-strong); background:var(--theme-soft);
+      border:1.5px solid var(--theme-glow); padding:7px 16px; border-radius:999px;
+      box-shadow:0 2px 12px var(--theme-soft);
     }
-    .theme-banner svg { width:15px; height:15px; stroke:var(--accent); flex-shrink:0; }
-    body.dark .theme-banner { color:var(--accent2); background:rgba(255,255,255,0.05); }
-    .day-label { font-size:12.5px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:6px 14px; border-radius:999px; }
+    .theme-banner svg { width:15px; height:15px; stroke:var(--theme-color); flex-shrink:0; }
+    body.dark .theme-banner { color:var(--theme-color); background:rgba(255,255,255,0.05); }
+    .day-label { font-size:12.5px; font-weight:700; color:var(--theme-color); background:var(--theme-soft); padding:6px 14px; border-radius:999px; }
     @keyframes bannerPop { 0%{transform:scale(0.85);opacity:0;} 60%{transform:scale(1.05);} 100%{transform:scale(1);opacity:1;} }
     .theme-banner.pop { animation:bannerPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
 
@@ -1912,11 +1933,13 @@ function resolveThemeKey(pz){
   if(d.categories.includes('nador')) return 'onko';
   return SPEC_TO_THEME[d.categories[0]] || 'brand';
 }
+/* the specialty theme colors ONLY the theme banner + day label — buttons, timer, clue
+   accents etc. always stay Mladí Lekári brand pink/mint (--accent is never touched here) */
 function applyTheme(themeKey){
   const t=THEMES[themeKey]||THEMES.brand;
   const r=document.documentElement.style;
-  r.setProperty('--accent',t.accent); r.setProperty('--accent2',t.accent2);
-  r.setProperty('--accent-strong',t.strong); r.setProperty('--accent-soft',t.soft); r.setProperty('--accent-glow',t.glow);
+  r.setProperty('--theme-color',t.accent); r.setProperty('--theme-strong',t.strong);
+  r.setProperty('--theme-soft',t.soft); r.setProperty('--theme-glow',t.glow);
   document.body.dataset.theme=themeKey;
 }
 function updateThemeBanner(themeKey){
@@ -2013,65 +2036,85 @@ function ambossUrl(dx){
   if(puzzle && puzzle.amboss) return puzzle.amboss;
   return 'https://www.google.com/search?q='+encodeURIComponent(dx+' AMBOSS knowledge');
 }
+const AMBOSS_ICONS = {
+  book:  '<path d="M4 6.2C4 5 5 4 6.3 4H12v16H6.3C5 20 4 19 4 17.8z"/><path d="M20 6.2C20 5 19 4 17.7 4H12v16h5.7c1.3 0 2.3-1 2.3-2.2z"/>',
+  grid:  '<rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/>',
+  check: '<rect x="3" y="4" width="18" height="16" rx="2.2"/><path d="M8.5 12l2.3 2.3L16 9.5"/>',
+  users: '<circle cx="9" cy="8.3" r="3.1"/><path d="M3.2 20c0-3.1 2.7-5.2 5.8-5.2s5.8 2.1 5.8 5.2"/><circle cx="17.2" cy="9" r="2.3"/><path d="M15.8 13c2.3.5 3.8 2.2 3.8 4.6"/>',
+  gift:  '<rect x="4" y="9.5" width="16" height="10.5" rx="1.4"/><path d="M4 9.5h16M12 9.5V20"/><path d="M12 9.5c-1-3-3.6-4.6-5.2-3.2-1.5 1.3-.3 3.2 5.2 3.2zM12 9.5c1-3 3.6-4.6 5.2-3.2 1.5 1.3.3 3.2-5.2 3.2z"/>',
+};
+function ambossIcon(name){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${AMBOSS_ICONS[name]}</svg>`; }
 const AMBOSS_STATS = [
-  { to:1500,    suffix:'+', label:'klinických a predklinických článkov' },
-  { to:20000,   suffix:'+', label:'vyhľadateľných tém, recenzovaných tímom 50+ lekárov' },
-  { to:22000,   suffix:'+', label:'otázok pripravených na svetové skúšky' },
-  { to:2000000, suffix:'+', label:'používateľov vo viac ako 180 krajinách' },
-  { to:null,               label:'Zadarmo pre študentov JLF UK, UK BA a UPJŠ KE', highlight:true },
+  { to:1500,    suffix:'+', label:'klinických a predklinických článkov', icon:'book' },
+  { to:20000,   suffix:'+', label:'vyhľadateľných tém, recenzovaných tímom 50+ lekárov', icon:'grid' },
+  { to:22000,   suffix:'+', label:'otázok pripravených na svetové skúšky', icon:'check' },
+  { to:2000000, suffix:'+', label:'používateľov vo viac ako 180 krajinách', icon:'users' },
+  { to:null,               label:'Zadarmo pre študentov JLF UK, UK BA a UPJŠ KE', icon:'gift', highlight:true },
 ];
 /* pure-CSS/HTML stylised homage to the AMBOSS app UI (not a literal screenshot) + animated CTA + stat tiles.
    No AI-written diagnosis summary here on purpose — this box only promotes the real AMBOSS article. */
 function buildAmbossPromo(dx){
   const statsHtml = AMBOSS_STATS.map((s,i)=>`
     <div class="amboss-stat${s.highlight?' highlight':''}" style="animation-delay:${0.55+i*0.08}s">
-      ${s.to!=null ? `<b data-count-to="${s.to}" data-suffix="${s.suffix}">0</b>` : ''}
-      <p>${s.label}</p>
+      ${ambossIcon(s.icon)}
+      <div>
+        ${s.to!=null ? `<b data-count-to="${s.to}" data-suffix="${s.suffix}">0</b>` : `<b>Zadarmo</b>`}
+        <p>${s.highlight ? 'pre študentov JLF UK, UK BA a UPJŠ KE' : s.label}</p>
+      </div>
     </div>`).join('');
   return `
     <div class="amboss-promo" id="amboss-promo">
       <div class="amboss-promo-inner">
-        <div class="amboss-mark"><img src="amboss-logo.png" alt="AMBOSS"></div>
+        <div class="amboss-mark"><img src="amboss-mark.png" alt="AMBOSS"></div>
         <div class="amboss-headline">Prečítaj si o diagnóze „<em>${dx}</em>“ na AMBOSS.</div>
-        <div class="amboss-quote">„Umožňujeme všetkým lekárom poskytovať tú najlepšiu možnú starostlivosť.“</div>
+        <div class="amboss-quote">„Umožňujeme lekárom poskytovať tú najlepšiu možnú starostlivosť.“</div>
         <a class="amboss-cta" id="amboss-cta" href="${ambossUrl(dx)}" target="_blank" rel="noopener noreferrer">
-          <img src="amboss-logo.png" alt=""><span>Klikni sem!</span>
+          <span>Klikni sem!</span>
           <svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
         </a>
-        <div class="amboss-phone-wrap">
-          <div class="amboss-phone" id="amboss-phone">
-            <div class="amboss-notch"></div>
-            <div class="amboss-screen">
-              <div class="amboss-screen-head">
-                <img src="amboss-logo.png" alt="AMBOSS">
-                <div class="amboss-search">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-                  <span>Hľadaj diagnózy…</span>
+        <div class="amboss-mac-wrap">
+          <div class="amboss-mac" id="amboss-mac">
+            <div class="amboss-mac-lid" id="amboss-mac-lid">
+              <div class="amboss-mac-cam"></div>
+              <div class="amboss-screen">
+                <div class="amboss-screen-head">
+                  <img src="amboss-mark.png" alt="AMBOSS">
+                  <div class="amboss-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <span>Hľadaj diagnózy, lieky, kalkulačky…</span>
+                  </div>
+                </div>
+                <div class="amboss-screen-body">
+                  <div class="amboss-row highlight-row"><div class="dot" style="background:#fff;"></div><div class="real-label">${dx}</div></div>
+                  <div class="amboss-row"><div class="dot"></div><div class="lines"><div class="line"></div><div class="line short"></div></div></div>
+                  <div class="amboss-row"><div class="dot"></div><div class="lines"><div class="line"></div><div class="line short"></div></div></div>
                 </div>
               </div>
-              <div class="amboss-screen-body">
-                <div class="amboss-row"><div class="dot"></div><div class="lines"><div class="line"></div><div class="line short"></div></div></div>
-                <div class="amboss-row"><div class="dot"></div><div class="real-label">${dx}</div></div>
-                <div class="amboss-row"><div class="dot"></div><div class="lines"><div class="line"></div><div class="line short"></div></div></div>
-              </div>
             </div>
+            <div class="amboss-mac-base"></div>
           </div>
         </div>
       </div>
     </div>
     <div class="amboss-stats">${statsHtml}</div>`;
 }
-/* mouse-tilt on the phone + count-up on the stat numbers, called once after the promo is in the DOM */
+/* scroll-triggered MacBook opening + subtle mouse-tilt + count-up on the stat numbers */
 function initAmbossPromo(){
   const promo=document.getElementById('amboss-promo'); if(!promo) return;
-  const phone=document.getElementById('amboss-phone');
-  if(phone){
+  const mac=document.getElementById('amboss-mac');
+  if(mac){
+    if('IntersectionObserver' in window){
+      const io=new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ mac.classList.add('open'); io.disconnect(); } });
+      }, { threshold:0.35 });
+      io.observe(mac);
+    } else mac.classList.add('open');
     promo.addEventListener('mousemove', e=>{
       const r=promo.getBoundingClientRect();
-      const px=(e.clientX-r.left)/r.width-0.5, py=(e.clientY-r.top)/r.height-0.5;
-      phone.style.transform=`rotateY(${px*14}deg) rotateX(${-py*14}deg)`;
+      const px=(e.clientX-r.left)/r.width-0.5;
+      mac.style.transform=`rotateY(${px*10}deg)`;
     });
-    promo.addEventListener('mouseleave', ()=>{ phone.style.transform=''; });
+    promo.addEventListener('mouseleave', ()=>{ mac.style.transform=''; });
   }
   const statsWrap = promo.nextElementSibling; /* .amboss-stats renders as a sibling, not a child, of #amboss-promo */
   (statsWrap||document).querySelectorAll('.amboss-stat b[data-count-to]').forEach(b=>{
