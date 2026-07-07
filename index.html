@@ -1701,19 +1701,23 @@ function share(){
 
     ctx.textAlign='center';
 
-    // ── collab logos (top, white silhouettes) ──
-    const ml=whiteSil(mlImg,44), ab=whiteSil(abImg,72);
-    const xW=42, gap=36, midY=175;
-    let total=(ml?ml.w:0)+gap+xW+gap+(ab?ab.w:0);
-    let cx0=(W-total)/2;
-    if(ml){ ctx.drawImage(ml.canvas,cx0,midY-ml.h/2); cx0+=ml.w; }
-    cx0+=gap; ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='300 44px "Plus Jakarta Sans",system-ui,sans-serif';
-    ctx.fillText('×',cx0+xW/2,midY+16); cx0+=xW+gap;
-    if(ab){ ctx.drawImage(ab.canvas,cx0,midY-ab.h/2); }
+    // ── collab logos (top, white silhouettes), stacked ──
+    // ml (mladí lekári) is a wide 6:1 wordmark; ab (AMBOSS) is a compact 1.79:1 mark. Side by
+    // side around a centred "×", their very different widths at matched heights make the whole
+    // group look lopsided even though the × itself sits exactly at centre (verified: it does).
+    // Stacking sidesteps the mismatch entirely — each logo is independently centred on its own
+    // row, so both are guaranteed visually centred regardless of their own width.
+    const mlY=125, xY=175, abY=231;
+    const ml=whiteSil(mlImg,42);
+    if(ml){ ctx.drawImage(ml.canvas, W/2-ml.w/2, mlY-ml.h/2); }
+    ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='300 30px "Plus Jakarta Sans",system-ui,sans-serif';
+    ctx.fillText('×', W/2, xY+10);
+    const ab=whiteSil(abImg,54);
+    if(ab){ ctx.drawImage(ab.canvas, W/2-ab.w/2, abY-ab.h/2); }
 
     // ── label + date ──
     ctx.fillStyle='rgba(255,255,255,0.62)'; ctx.font='800 27px "Plus Jakarta Sans",system-ui,sans-serif';
-    ctx.fillText('DENNÁ KAZUISTIKA', W/2, 330);
+    ctx.fillText('KazuistiCard', W/2, 330);
     ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='500 27px "Plus Jakarta Sans",system-ui,sans-serif';
     ctx.fillText(dateStr, W/2, 372);
 
@@ -1758,23 +1762,37 @@ function share(){
     roundRect(lx,ly,lw,lh,lh/2); ctx.fillStyle='rgba(255,255,255,0.94)'; ctx.fill();
     ctx.fillStyle='#a51f6f'; ctx.fillText(lvlText, W/2, ly+lh/2+11);
 
-    // ── AMBOSS perk strip (real AMBOSS teal, mark-only logo) ──
+    // ── AMBOSS perk strip (real AMBOSS teal, mark-only logo, icon+text centred as one group) ──
     const stX=90, stY=1336, stW=W-180, stH=232;
     roundRect(stX,stY,stW,stH,36);
     const stBg=ctx.createLinearGradient(stX,stY,stX+stW,stY+stH);
     stBg.addColorStop(0,'#0a6e71'); stBg.addColorStop(1,'#009ba4');
     ctx.fillStyle=stBg; ctx.fill();
     ctx.lineWidth=1.5; ctx.strokeStyle='rgba(255,255,255,0.22)'; ctx.stroke();
-    const abs=whiteSil(abMarkImg,84);
-    if(abs){ ctx.drawImage(abs.canvas, stX+42, stY+(stH-84)/2); }
+
+    const stL1='Prečítaj si článok na AMBOSS.';
+    const stL2='1 500+ článkov · 22 000+ otázok';
+    const stL3='Zadarmo pre študentov JLF UK Martin,';
+    const stL4='LF UK Bratislava, LF UPJŠ Košice';
     ctx.textAlign='left';
-    const tx=stX+42+(abs?abs.w:0)+38;
+    ctx.font='800 30px "Plus Jakarta Sans",system-ui,sans-serif'; const w1=ctx.measureText(stL1).width;
+    ctx.font='500 23px "Plus Jakarta Sans",system-ui,sans-serif';
+    const maxTextW=Math.max(w1, ctx.measureText(stL2).width, ctx.measureText(stL3).width, ctx.measureText(stL4).width);
+
+    const abs=whiteSil(abMarkImg,84);
+    const iconW=abs?abs.w:0, groupGap=32;
+    const groupW=iconW+(iconW?groupGap:0)+maxTextW;
+    const groupX=stX+(stW-groupW)/2;                    // centre the icon+text group as one unit
+    if(abs){ ctx.drawImage(abs.canvas, groupX, stY+75); } // vertically centred against the text block below
+
+    const tx=groupX+iconW+(iconW?groupGap:0);
+    const b1=stY+68, b2=b1+40, b3=b2+36, b4=b3+36;      // even 36px rhythm between the 3 body lines
     ctx.fillStyle='#fff'; ctx.font='800 30px "Plus Jakarta Sans",system-ui,sans-serif';
-    ctx.fillText('Prečítaj si článok na AMBOSS.', tx, stY+56);
+    ctx.fillText(stL1, tx, b1);
     ctx.fillStyle='rgba(255,255,255,0.82)'; ctx.font='500 23px "Plus Jakarta Sans",system-ui,sans-serif';
-    ctx.fillText('1 500+ článkov · 22 000+ otázok', tx, stY+94);
-    ctx.fillText('Zadarmo pre študentov JLF UK Martin,', tx, stY+130);
-    ctx.fillText('LF UK Bratislava, LF UPJŠ Košice', tx, stY+164);
+    ctx.fillText(stL2, tx, b2);
+    ctx.fillText(stL3, tx, b3);
+    ctx.fillText(stL4, tx, b4);
     ctx.textAlign='center';
 
     // ── CTA ──
