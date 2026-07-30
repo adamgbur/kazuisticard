@@ -1,49 +1,61 @@
-# Úloha: obrázky a AMBOSS články pre 30 kazuistík
+# Obrázky ku kazuistikám — náročná sada, 31 prípadov
 
-Pre každý prípad je uvedené: presne AKÝ nález má obrázok ukazovať (aby sedel s indíciou v hre),
-a aký hľadať pojem na AMBOSS. Tam, kde je nález slabší kandidát na obrázok (napr. čisto laboratórna/klinická
-diagnóza bez typického zobrazenia), je to označené **(voliteľné)** — pokojne preskoč, nie je nutné mať
-obrázok úplne v každom prípade za každú cenu, dôležitejšia je presnosť.
+Aktualizované 30. júla 2026. Pôvodných 30 ľahkých kazuistík (infarkt myokardu, apendicitída,
+komunitná pneumónia, DKA, CMP a podobne) je nahradených sadou 31 náročných prípadov typu
+„klasická zebra". Obrázky k starým prípadom sú v `_stare-pripady/` — v hre sa už nepoužívajú
+a ich čísla NEODPOVEDAJÚ novému poradiu.
 
-Vyhľadávacie výrazy sú v slovenčine aj angličtine (Openi/Wikimedia/Radiopaedia sú anglické databázy).
+Ku každému prípadu je v `index.html` pri príslušnej indícii pole `imageHint` s presným
+anglickým zadaním pre AMBOSS. Nižšie je prehľad vrátane toho, na ktorej indícii obrázok visí.
 
-| # | Diagnóza | Čo má obrázok ukazovať (musí sedieť s indíciou) | Hľadaj (SK / EN) |
+## Prehľad zadaní
+
+| č. | diagnóza | indícia | čo musí obrázok ukazovať (zadanie pre AMBOSS) |
 |---|---|---|---|
-| 01 | Subarachnoidálne krvácanie | natívne CT mozgu — hyperdenzita (krv) v bazálnych cisternách a sylviovej ryhe | subarachnoidálne krvácanie CT / subarachnoid hemorrhage CT basal cisterns |
-| 02 | Infarkt myokardu | 12-zvodové EKG — elevácia ST **presne vo zvodoch II, III, aVF** (dolný/inferiórny STEMI — **nie predný!**) | inferiórny infarkt EKG / inferior STEMI ECG II III aVF |
-| 03 | Pľúcna embólia | CT angiografia pľúcnice — defekt náplne (trombus) v a. pulmonalis | pľúcna embólia CT angio / pulmonary embolism CTPA filling defect |
-| 04 | Diabetická ketoacidóza | *(voliteľné)* moč — ketolátky výrazne pozitívne na diagnostickom prúžku | ketolátky moč prúžok / urine ketones dipstick strongly positive |
-| 05 | Bakteriálna meningitída | kožný nález — petechie a splývajúca purpura (meningokoková sepsa) | petechie meningokok / purpura fulminans meningococcemia |
-| 06 | Apendicitída | USG brucha — nestlačiteľná tubulárna štruktúra (zapálený apendix) | apendicitída USG / acute appendicitis ultrasound |
-| 07 | Anafylaxia | *(voliteľné)* klinické foto — opuch pier/tváre (angioedém) | angioedém tvár foto / facial angioedema photo |
-| 08 | Disekcia aorty | CT angiografia — intimálny flap v aorte (Stanford typ A) | disekcia aorty CT / aortic dissection CT intimal flap |
-| 09 | Sepsa | *(voliteľné)* klinické foto — mramorovanie kože (cutis marmorata) pri septickom šoku | mramorovanie kože sepsa / mottled skin septic shock |
-| 10 | Akútna pankreatitída | CT brucha — nekróza pankreasu s peripankreatickou kolekciou | akútna pankreatitída CT / acute pancreatitis CT necrosis |
-| 11 | Ektopická gravidita | transvaginálne USG — prázdna maternica + útvar pri vajíčkovode | ektopická gravidita USG / ectopic pregnancy transvaginal ultrasound |
-| 12 | Hypertenzná emergencia | fundoskopia — edém papily a plamienkové hemorágie (hypertenzná retinopatia IV. st.) | hypertenzná retinopatia fundus / hypertensive retinopathy papilledema fundus photo |
-| 13 | Gravesova choroba | klinické foto — obojstranný exoftalmus (endokrinná orbitopatia) | exoftalmus Gravesova choroba / Graves ophthalmopathy exophthalmos photo |
-| 14 | Exacerbácia CHOCHP | *(voliteľné)* RTG hrudníka — hyperinflácia pľúc, sploštené bránice (typický CHOCHP nález, nie akútny infiltrát) | CHOCHP RTG hyperinflácia / COPD chest x-ray hyperinflation |
-| 15 | Komunitná pneumónia | RTG hrudníka — lobárny infiltrát pravého dolného laloka | pneumónia RTG lobárny infiltrát / lobar pneumonia chest x-ray |
-| 16 | Spontánny pneumotorax | RTG hrudníka — kolaps ľavých pľúc, viditeľná viscerálna pleura, **bez posunu mediastína** | spontánny pneumotorax RTG / spontaneous pneumothorax chest x-ray |
-| 17 | Akútna cholecystitída | USG brucha — zhrubnutá stena žlčníka + konkrement v krčku | akútna cholecystitída USG / acute cholecystitis ultrasound gallstone |
-| 18 | Crohnova choroba | kolonoskopia — segmentové „skip" lézie, dlažbovitá sliznica | Crohnova choroba kolonoskopia / Crohn disease colonoscopy cobblestone |
-| 19 | Ischemická cievna mozgová príhoda | CT angiografia — oklúzia M1 segmentu ľavej a. cerebri media | ischemická CMP CT angio / ischemic stroke CTA M1 occlusion |
-| 20 | Parkinsonova choroba | *(preskoč)* — klinická diagnóza, štandardné zobrazenie (DaTscan) je špecializované a nepoužíva sa bežne | — |
-| 21 | Guillainov-Barrého syndróm | *(voliteľné)* EMG záznam — demyelinizačná polyneuropatia | GBS EMG nález / Guillain-Barré EMG demyelinating |
-| 22 | Reumatoidná artritída | RTG rúk — periartikulárna osteoporóza a okrajové erózie (MCP/PIP) | reumatoidná artritída RTG rúk / rheumatoid arthritis hand x-ray erosions |
-| 23 | Systémový lupus erythematosus | klinické foto — motýľovitý (malar) exantém tváre, **šetriaci nazolabiálne ryhy** | motýľovitý exantém lupus / lupus malar rash photo |
-| 24 | Temporálna arteritída | histopatológia — granulomatózny zápal s obrovskými bunkami (biopsia a. temporalis) | obrovskobunková arteritída histológia / giant cell arteritis histopathology |
-| 25 | Mnohopočetný myelóm | RTG lebky — mnohopočetné osteolytické „vyrazené" (punched-out) ložiská | mnohopočetný myelóm RTG lebka / multiple myeloma skull x-ray punched-out lesions |
-| 26 | Sideropenická anémia | klinické foto — koilonychia (lyžicovité nechty) | koilonychia foto / koilonychia spoon nails photo |
-| 27 | Infekčná mononukleóza | krvný náter — atypické lymfocyty | infekčná mononukleóza náter / infectious mononucleosis peripheral smear atypical lymphocytes |
-| 28 | Lymská borelióza | klinické foto — erythema migrans (terčovitý tvar) | erythema migrans foto / erythema migrans bullseye rash photo |
-| 29 | Pyelonefritída | *(voliteľné)* moč — mikroskopia, leukocytové valce | leukocytové valce moč / urine microscopy WBC casts |
-| 30 | Feochromocytóm | CT brucha — dobre ohraničený útvar nadobličky | feochromocytóm CT nadoblička / pheochromocytoma CT adrenal mass |
+| 01 | Akútna intermitentná porfýria | 5 | port wine-colored / dark reddish-brown urine sample in acute intermittent porphyria |
+| 02 | Hypertrofická kardiomyopatia | 5 | echocardiogram in hypertrophic cardiomyopathy — asymmetric septal thickening with systolic anterior motion of the mitral valve and left ventricular outflow tract obstruction |
+| 03 | Celiakia | 5 | duodenal biopsy in celiac disease — villous atrophy, crypt hyperplasia and intraepithelial lymphocytosis |
+| 04 | Alportov syndróm | 5 | electron microscopy in Alport syndrome — irregular thinning and thickening with longitudinal splitting of the glomerular basement membrane (basket-weave appearance) |
+| 05 | Skleróza multiplex | 5 | brain MRI in multiple sclerosis — multiple periventricular T2 hyperintense demyelinating plaques (Dawson fingers) |
+| 06 | Karcinoidový syndróm | 5 | carcinoid tumor histology — nests of neuroendocrine cells forming rosettes, chromogranin A positive |
+| 07 | Hereditárna sferocytóza | 5 | peripheral blood smear in hereditary spherocytosis — small round RBCs without central pallor |
+| 08 | Sarkoidóza | 5 | chest imaging in sarcoidosis — bilateral hilar lymphadenopathy |
+| 09 | Wilsonova choroba | 5 | Kayser-Fleischer ring — golden-brown copper deposit at corneal limbus (Descemet membrane), slit-lamp photo |
+| 10 | Feochromocytóm | 5 | adrenal mass on abdominal CT in pheochromocytoma |
+| 11 | Achalázia | 4 | barium swallow in achalasia — dilated esophagus with smooth tapering distal stenosis (bird's beak sign) |
+| 12 | Dermatomyozitída | 5 | Gottron papules over the extensor surfaces of the finger joints in dermatomyositis (and heliotrope eyelid edema) |
+| 13 | IgA nefropatia | 5 | renal biopsy immunofluorescence in IgA nephropathy (Berger disease) — granular mesangial IgA immune complex deposits |
+| 14 | Lambertov-Eatonov myastenický syndróm | 5 | repetitive nerve stimulation in Lambert-Eaton myasthenic syndrome — low baseline CMAP amplitude with marked incremental response at high-frequency stimulation or post-exercise |
+| 15 | Primárna biliárna cholangitída | 5 | liver histology in primary biliary cholangitis — lymphocytic destruction of small intrahepatic bile ducts with granulomatous florid duct lesion |
+| 16 | Deficiencia G6PD | 5 | peripheral blood smear in G6PD deficiency — Heinz bodies and bite cells |
+| 17 | Primárny hyperaldosteronizmus | 5 | adrenal CT showing a unilateral adrenal adenoma (Conn syndrome) in primary hyperaldosteronism |
+| 18 | Granulomatóza s polyangiitídou | 5 | chest CT in granulomatosis with polyangiitis — multiple bilateral pulmonary nodules with central cavitation |
+| 19 | Whippleova choroba | 5 | duodenal biopsy in Whipple disease — PAS-positive foamy macrophages in the intestinal lamina propria |
+| 20 | Huntingtonova choroba | 5 | brain MRI in Huntington disease — atrophy of the caudate and putamen with ex vacuo ventriculomegaly |
+| 21 | Polycytémia vera | 5 | erythromelalgia — severe burning pain with red-blue discoloration of the extremities in polycythemia vera |
+| 22 | Deficiencia alfa-1-antitrypsínu | 5 | chest CT showing panacinar emphysema in alpha-1 antitrypsin deficiency |
+| 23 | Antifosfolipidový syndróm | 5 | livedo reticularis — net-like reticular violaceous skin mottling (antiphospholipid syndrome) |
+| 24 | Akromegália | 5 | acromegaly — coarsened facial features with prognathism and enlarged hands (soft tissue overgrowth) |
+| 25 | Neuroblastóm | 5 | neuroblastoma histology — Homer-Wright rosettes (neuroblasts surrounding a central area of neuropil) |
+| 26 | Trombotická trombocytopenická purpura | 4 | peripheral blood smear in thrombotic thrombocytopenic purpura — schistocytes (fragmented RBCs) of microangiopathic hemolytic anemia |
+| 27 | Hemochromatóza | 5 | liver biopsy with Prussian blue stain showing hemosiderin (iron) deposition in hereditary hemochromatosis |
+| 28 | Wernickeho encefalopatia | 5 | brain MRI in Wernicke encephalopathy — symmetric FLAIR hyperintensities in the mammillary bodies and periaqueductal region |
+| 29 | Paroxyzmálna nočná hemoglobinúria | 6 | flow cytometry in paroxysmal nocturnal hemoglobinuria — CD55 (DAF) and CD59 (MIRL) deficient granulocyte/erythrocyte population, GPI-anchor negative clone |
+| 30 | Addisonova choroba | 5 | hyperpigmentation of buccal mucosa and palmar creases in primary adrenal insufficiency (Addison disease) |
+| 31 | Otrava olovom | 5 | peripheral blood smear in lead poisoning — basophilic stippling of erythrocytes |
 
-## Dôležité pri výbere obrázka
+## Poradie odhaľovania
 
-- Over si, že nález na obrázku **presne** sedí s tým, čo je napísané v indícii (napr. prípad 02 potrebuje
-  **dolný/inferiórny** STEMI — obrázok predného STEMI by bol chybný, aj keď je to "tiež STEMI").
-  Vyhýbaj sa obrázkom, kde je súčasne aj iná diagnóza (napr. pneumotorax + súčasná TBC na tom istom RTG).
-- Uprednostni obrázky s jasným, jednoznačným popiskom pri zdroji (caption), ktorý presne opisuje nález.
-- Pri Radiopaedia a DermNet si vždy over aktuálnu licenciu pri konkrétnom prípade/obrázku — mení sa.
+Číslo indície je hodnota `specificity`, nie pozícia v poli. Obrázok je vždy až na 4. až 6.
+indícii — na 1. až 3. by prípad prezradil.
+
+## Pripomienka k textu
+
+Ak indícia dostane pole `image`, obrázok **nahradí** text indície. Text pri takej indícii
+je preto len krátky popisok („Echokardiografia, parasternálna dlhá os.") a samotný
+diagnostický nález sa nikdy nepíše do textu — inak by obrázok stratil zmysel.
+
+## AMBOSS články
+
+Odkazy sa vedú v `amboss-links.csv` v koreňovom priečinku. Pre novú sadu je zatiaľ
+všetkých 31 riadkov prázdnych (`overene = nie`).
